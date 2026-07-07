@@ -307,17 +307,10 @@ public class MapNavigationPage extends BasePage {
                 shortCheck.until(ExpectedConditions.invisibilityOf(verifyBtn));
                 System.out.println("CAPTCHA auto-solved successfully!");
             } catch (Exception notSolvedEx) {
-                System.out.println("CAPTCHA requires manual intervention.");
-                System.out.println("Script is pausing. Please solve the CAPTCHA manually in the browser.");
-                System.out.println("The script will automatically resume once the 'Verify' button disappears.");
-                
-                // Wait up to 24 hours for the user to solve the captcha manually
-                org.openqa.selenium.support.ui.WebDriverWait waitDisappear = new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofHours(24));
-                waitDisappear.until(ExpectedConditions.invisibilityOf(verifyBtn));
-                System.out.println("Verification solved manually! Resuming script...");
+                System.out.println("CAPTCHA requires manual intervention (image grid appeared).");
+                System.out.println("⚠️ CLOUDFLARE CAPTCHA DETECTED! EXITING RUN! ⚠️");
+                throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED");
             }
-            
-            System.out.println("Verification solved manually! Resuming script...");
             try { Thread.sleep(2000); } catch(Exception e) {}
             
         } catch (Exception e) {
