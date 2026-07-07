@@ -143,6 +143,10 @@ public class HuntingSteps {
             }
 
             // Map URL Check: In case the current tab was hijacked or navigated away
+            if (driver.getCurrentUrl().contains("login.php")) {
+                System.out.println("⚠️ CLOUDFLARE CAPTCHA DETECTED! EXITING RUN! ⚠️");
+                throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED");
+            }
             if (!driver.getCurrentUrl().contains("wander") && !driver.getCurrentUrl().contains("map")) {
                 System.out.println("Not on the map page! Currently at (" + driver.getCurrentUrl() + "). Navigating back to map.");
                 mapPage.safeNavigate(availableMaps.get(currentMapIndex));

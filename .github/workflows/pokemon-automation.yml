@@ -32,9 +32,35 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
-      - name: Run Trainer Battles
-        run: mvn test -Dcucumber.filter.tags="@trainer" -Dheadless=true
-
-      - name: Run Hunting
-        if: always()
-        run: mvn test -Dcucumber.filter.tags="@hunt" -Dheadless=true
+      - name: Run Automation Loop
+        run: |
+          MAX_RETRIES=10
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "======================================"
+            echo "Attempt $i of $MAX_RETRIES"
+            echo "======================================"
+            
+            echo "Running Trainer Battles..."
+            mvn test -Dcucumber.filter.tags="@trainer" -Dheadless=true | tee trainer.log
+            TRAINER_EXIT=${PIPESTATUS[0]}
+            
+            echo "Running Hunting..."
+            mvn test -Dcucumber.filter.tags="@hunt" -Dheadless=true | tee hunt.log
+            HUNT_EXIT=${PIPESTATUS[0]}
+            
+            if [ $TRAINER_EXIT -eq 0 ] && [ $HUNT_EXIT -eq 0 ]; then
+              echo "Both scripts completed successfully!"
+              exit 0
+            fi
+            
+            if grep -q "CLOUDFLARE CAPTCHA DETECTED" trainer.log hunt.log; then
+              echo "Cloudflare CAPTCHA block detected! Waiting 2 minutes before retrying to get a fresh IP/Session..."
+              sleep 120
+            else
+              echo "Failure was not due to CAPTCHA. Exiting."
+              exit 1
+            fi
+          done
+          
+          echo "Max retries reached without success."
+          exit 1

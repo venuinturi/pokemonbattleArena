@@ -56,11 +56,8 @@ public class TrainerBattleSteps {
                 }
                 
                 if (driver.getCurrentUrl().contains("login.php")) {
-                    loginFailCount++;
-                    System.out.println("⚠️ LOGIN FAILED OR BLOCKED BY CLOUDFLARE! ⚠️");
-                    System.out.println("Script is pausing for 30 seconds. Please solve the CAPTCHA or login manually.");
-                    try { Thread.sleep(30000); } catch(Exception e) {}
-                    continue; // Check again after 30 seconds
+                    System.out.println("⚠️ CLOUDFLARE CAPTCHA DETECTED! EXITING RUN! ⚠️");
+                    throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED");
                 } else {
                     loginFailCount = 0; // Reset on success
                 }
