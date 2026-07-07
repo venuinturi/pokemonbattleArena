@@ -7,8 +7,8 @@ pipeline {
     }
 
     triggers {
-        // Uncomment the line below to run automatically every night at midnight
-        // cron('H 0 * * *')
+        // Runs automatically every night at midnight (Jenkins time)
+        cron('H 0 * * *')
     }
 
     options {
@@ -18,12 +18,7 @@ pipeline {
         timeout(time: 6, unit: 'HOURS')
     }
 
-    tools {
-        // Assumes you have Maven configured in Jenkins Global Tool Configuration named 'maven-3'
-        // If Maven is installed on the agent directly, you can remove this block.
-        // maven 'maven-3'
-        // jdk 'jdk-17'
-    }
+    // tools block removed since Maven is called directly
 
     stages {
         stage('Checkout') {
@@ -36,7 +31,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'Compiling the project...'
-                sh 'mvn clean test-compile'
+                sh '/opt/homebrew/bin/mvn clean test-compile'
             }
         }
 
@@ -54,7 +49,7 @@ pipeline {
                         // We use catchError so that if an iteration fails (e.g., website timeout), 
                         // the pipeline will continue to the next iteration rather than stopping completely.
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                            sh "mvn test -Dcucumber.filter.tags=\"${params.CUCUMBER_TAGS}\""
+                            sh "/opt/homebrew/bin/mvn test -Dcucumber.filter.tags=\"${params.CUCUMBER_TAGS}\""
                         }
                         
                         // Sleep briefly between iterations
