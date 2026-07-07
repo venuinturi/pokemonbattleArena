@@ -1,3 +1,4 @@
+@hunt
 Feature: Wild Pokemon Hunting Automation
 
   Scenario: Hunt on the map for a specified duration and battle with the lowest attack

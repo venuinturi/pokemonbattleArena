@@ -1,3 +1,4 @@
+@trainer
 Feature: Trainer Battles Automation
 
   Scenario: Battle trainers appropriate for my team level
