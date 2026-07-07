@@ -1,0 +1,74 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------< com.pokemon.automation:pokemon-battle-automation >----------
+[INFO] Building pokemon-battle-automation 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ pokemon-battle-automation ---
+[INFO] skip non existing resourceDirectory /Users/venugopal/pokemon-battle-automation/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ pokemon-battle-automation ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ pokemon-battle-automation ---
+[INFO] Copying 5 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ pokemon-battle-automation ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ pokemon-battle-automation ---
+[INFO] Using auto detected provider org.apache.maven.surefire.testng.TestNGProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.pokemon.automation.runners.TestRunner
+
+Scenario: Hunt on the map for a specified duration and battle with the lowest attack # src/test/resources/features/hunting.feature:3
+  Given I log in to Pokemon Battle Arena                                             # com.pokemon.automation.stepdefinitions.HuntingSteps.iLogInToPokemonBattleArena()
+Navigating to Trainer HQ to load team...
+Navigating to My Pokemon Teams page...
+Dumped team.php to target/team_dump.html
+Successfully clicked 'Load Team' icon for: huntingteam3
+  And I load the team "huntingteam3" under Trainer HQ                                # com.pokemon.automation.stepdefinitions.HuntingSteps.iLoadTheTeamUnderTrainerHQ(java.lang.String)
+Scraping available maps from the homescreen...
+Found 82 maps to hunt on!
+Maps shuffled randomly! Starting with map: https://pokemonbattlearena.net/members/wander.php?M=140
+Healing at Pokemon Center before hunting...
+Team healed.
+Navigating to the Map.
+  And I navigate to the map                                                          # com.pokemon.automation.stepdefinitions.HuntingSteps.iNavigateToTheMap()
+Wild Pokemon on map is NOT captured! Clicking battle, then checking for verification!
+Clicked battle button. Waiting 3 seconds for page to load before bot-check...
+In battle! Enemy is Unknown Pokemon (Level: 999). Below level 5, defeating instead.
+Could not parse Pokeball count correctly (returned 999).
+Healing at Pokemon Center...
+Team healed.
+Checking team for Pokemon >= Level 11...
+Found Pokemon >= Level 11 in slot 1!
+Swapping slot 1 with PC Pokemon.
+Swap executed successfully.
+Configuring attacks for newly swapped Pokemon with ID 41281968
+Found Pokemon details link: https://pokemonbattlearena.net/members/pokemon.php?ID=41281968
+Found Attack Dropdown! Name attribute: pokemonskills
+Only one attack available, selected it.
+Returning to same map: https://pokemonbattlearena.net/members/wander.php?M=140
+Wild Pokemon on map is NOT captured! Clicking battle, then checking for verification!
+Clicked battle button. Waiting 3 seconds for page to load before bot-check...
+⚠️ BOT VERIFICATION DETECTED! ⚠️
+Attempting basic auto-click on CAPTCHA...
+Clicked CAPTCHA checkbox! Waiting a moment for it to process...
+Clicking 'Verify' button...
+Auto-click attempt failed or was denied: element click intercepted: Element <input type="submit" class="btn btn-info" id="btnSubmit" name="btnSubmit" value="Verify"> is not clickable at point (735, 584). Other element would receive the click: <iframe title="recaptcha challenge expires in two minutes" name="c-r72r42nsmq3s" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation" src="https://www.google.com/recaptcha/api2/bframe?hl=en&amp;v=TnA7HacJFoBWt9hnlunBlYfK&amp;k=6LdMB2YbAAAAACvmfeMOImPzF_nIogWOenvyf2cO&amp;bft=0dAFcWeA75zjLzmzg4S_pr1PJpYaf2GW654TfDHqzheve6md0p8H0YDC4_Rz-i7PnwUXfOj7AQhtYmqSN-eHv0fO954LgyccVDdw" style="width: 400px; height: 580px;"></iframe>
+  (Session info: chrome=149.0.7827.200)
+Build info: version: '4.21.0', revision: '79ed462ef4'
+System info: os.name: 'Mac OS X', os.arch: 'aarch64', os.version: '26.4.1', java.version: '26.0.1'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [d9dac3128bd18eab3614d0f9d8bbfb87, clickElement {id=f.68F042168BD867C882CC091B7E2A5399.d.B213593F917B2DF3516584B89DB79F9F.e.3563}]
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 149.0.7827.200, chrome: {chromedriverVersion: 149.0.7827.155 (07b52360cc1..., userDataDir: /var/folders/hd/pgzjfrms0z5...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:63442}, goog:processID: 28381, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: mac, proxy: Proxy(), se:cdp: ws://localhost:63442/devtoo..., se:cdpVersion: 149.0.7827.200, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Element: [[ChromeDriver: chrome on mac (d9dac3128bd18eab3614d0f9d8bbfb87)] -> xpath: //input[translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='verify'] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'verify')] | //input[contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'verify')]]
+Session ID: d9dac3128bd18eab3614d0f9d8bbfb87
+CAPTCHA requires manual intervention.
+Script is pausing. Please solve the CAPTCHA manually in the browser.
+The script will automatically resume once the 'Verify' button disappears.
