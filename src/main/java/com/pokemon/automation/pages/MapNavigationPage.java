@@ -314,6 +314,9 @@ public class MapNavigationPage extends BasePage {
             try { Thread.sleep(2000); } catch(Exception e) {}
             
         } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("CLOUDFLARE CAPTCHA DETECTED")) {
+                throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED"); // Rethrow to fail the test!
+            }
             // Not present or error, ignore
         }
     }
