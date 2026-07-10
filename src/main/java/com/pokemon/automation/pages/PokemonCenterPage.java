@@ -48,17 +48,24 @@ public class PokemonCenterPage extends BasePage {
             // We need to parse the HTML tables above it to see the level
             List<WebElement> teamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
             if (teamTables.isEmpty()) {
-                // Try an alternate xpath
                 teamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
             }
-            for (int i = 0; i < teamTables.size(); i++) {
+            int numTeamMembers = teamTables.size();
+            for (int i = 0; i < numTeamMembers; i++) {
                 int slotIndex = i + 1; // 1-indexed for ddParty
                 
                 if (maxLevelThreshold == 11 && (slotIndex == 5 || slotIndex == 6)) {
                     continue;
                 }
                 
-                String lvlStr = teamTables.get(i).getText().replaceAll("[^0-9]", "");
+                // Re-fetch to avoid stale element reference
+                List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+                if (currentTeamTables.isEmpty()) {
+                    currentTeamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+                }
+                if (i >= currentTeamTables.size()) continue;
+
+                String lvlStr = currentTeamTables.get(i).getText().replaceAll("[^0-9]", "");
                 if (!lvlStr.isEmpty() && Integer.parseInt(lvlStr) >= maxLevelThreshold) {
                     highLevelIndex = slotIndex;
                     break;
@@ -228,9 +235,17 @@ public class PokemonCenterPage extends BasePage {
             if (teamTables.isEmpty()) {
                 teamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
             }
+            int numTeamMembers = teamTables.size();
             
-            for (int i = 0; i < teamTables.size(); i++) {
-                String lvlStr = teamTables.get(i).getText().replaceAll("[^0-9]", "");
+            for (int i = 0; i < numTeamMembers; i++) {
+                // Re-fetch to avoid stale element reference
+                List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+                if (currentTeamTables.isEmpty()) {
+                    currentTeamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+                }
+                if (i >= currentTeamTables.size()) continue;
+
+                String lvlStr = currentTeamTables.get(i).getText().replaceAll("[^0-9]", "");
                 if (!lvlStr.isEmpty() && Integer.parseInt(lvlStr) >= maxLevelThreshold) {
                     highLevelIndex = i + 1; // 1-indexed for ddParty
                     break;

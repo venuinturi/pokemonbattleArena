@@ -175,8 +175,13 @@ public class HuntingSteps {
                 boolean isMapLegendary = mapPage.isLegendary();
                 
                 if (mapPage.isPokemonAlreadyCaptured()) {
-                    System.out.println("Wild Pokemon on map is already captured. Skipping battle.");
-                    shouldBattle = false;
+                    if (isSpecial || isMapLegendary) {
+                        System.out.println("Wild Pokemon is captured, BUT it is legendary/special! Proceeding to battle.");
+                        shouldBattle = true;
+                    } else {
+                        System.out.println("Wild Pokemon on map is already captured. Skipping battle.");
+                        shouldBattle = false;
+                    }
                 } else {
                     System.out.println("Wild Pokemon on map is NOT captured! Proceeding to battle.");
                     shouldBattle = true;
