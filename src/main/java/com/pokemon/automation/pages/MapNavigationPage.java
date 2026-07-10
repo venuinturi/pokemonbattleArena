@@ -308,6 +308,8 @@ public class MapNavigationPage extends BasePage {
                 System.out.println("CAPTCHA auto-solved successfully!");
             } catch (Exception notSolvedEx) {
                 System.out.println("CAPTCHA requires manual intervention (image grid appeared).");
+                System.out.println("Waiting 20 seconds before skipping to allow potential manual solve or session cooldown...");
+                try { Thread.sleep(20000); } catch(Exception ex) {}
                 System.out.println("⚠️ CLOUDFLARE CAPTCHA DETECTED! EXITING RUN! ⚠️");
                 throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED");
             }

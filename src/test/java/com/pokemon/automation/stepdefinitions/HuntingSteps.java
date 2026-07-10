@@ -144,6 +144,8 @@ public class HuntingSteps {
 
             // Map URL Check: In case the current tab was hijacked or navigated away
             if (driver.getCurrentUrl().contains("login.php")) {
+                System.out.println("Waiting 20 seconds before skipping to allow potential manual solve or session cooldown...");
+                try { Thread.sleep(20000); } catch(Exception ex) {}
                 System.out.println("⚠️ CLOUDFLARE CAPTCHA DETECTED! EXITING RUN! ⚠️");
                 throw new RuntimeException("CLOUDFLARE CAPTCHA DETECTED");
             }
