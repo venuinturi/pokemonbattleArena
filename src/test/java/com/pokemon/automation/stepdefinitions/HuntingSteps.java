@@ -273,26 +273,22 @@ public class HuntingSteps {
                         }
                         
                         if (shouldCapture) {
-                            if (isLegendary && faintedPokemonCount >= 4 && masterballAttemptCount < 1) {
-                                System.out.println("Emergency! 4 Pokemon fainted against Legendary. Using Masterball immediately!");
-                                battlePage.useMasterball();
-                                masterballAttemptCount++;
-                                actionTaken = true;
-                            } else if (enemyHp < 9 && enemyHp > 0) {
-                                if (pokeballAttemptCount < 4) {
-                                    battlePage.usePokeball();
-                                    pokeballAttemptCount++;
+                            if (isLegendary || isSpecial) {
+                                if (masterballAttemptCount < 1) {
+                                    System.out.println("Legendary/Special appeared! Using Masterball immediately!");
+                                    battlePage.useMasterball();
+                                    masterballAttemptCount++;
                                     actionTaken = true;
                                 } else if (greatballAttemptCount < 2) {
                                     battlePage.useGreatball();
                                     greatballAttemptCount++;
                                     actionTaken = true;
-                                } else if (masterballAttemptCount < 1 && (isLegendary || enemyLevel >= 60)) {
-                                    battlePage.useMasterball();
-                                    masterballAttemptCount++;
+                                } else if (pokeballAttemptCount < 4) {
+                                    battlePage.usePokeball();
+                                    pokeballAttemptCount++;
                                     actionTaken = true;
                                 } else {
-                                    System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
+                                    System.out.println("Out of balls for Legendary/Special! Have to attack...");
                                     if (zeroDamageCount > 0) {
                                         if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                                             actionTaken = true;
@@ -306,15 +302,44 @@ public class HuntingSteps {
                                     }
                                 }
                             } else {
-                                if (zeroDamageCount > 0) {
-                                    if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                if (enemyHp < 9 && enemyHp > 0) {
+                                    if (pokeballAttemptCount < 4) {
+                                        battlePage.usePokeball();
+                                        pokeballAttemptCount++;
                                         actionTaken = true;
-                                        lastActionWasAttack = true;
+                                    } else if (greatballAttemptCount < 2) {
+                                        battlePage.useGreatball();
+                                        greatballAttemptCount++;
+                                        actionTaken = true;
+                                    } else if (masterballAttemptCount < 1 && enemyLevel >= 60) {
+                                        battlePage.useMasterball();
+                                        masterballAttemptCount++;
+                                        actionTaken = true;
+                                    } else {
+                                        System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
+                                        if (zeroDamageCount > 0) {
+                                            if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                                actionTaken = true;
+                                                lastActionWasAttack = true;
+                                            }
+                                        } else {
+                                            if (battlePage.selectLowestPowerAttack()) {
+                                                actionTaken = true;
+                                                lastActionWasAttack = true;
+                                            }
+                                        }
                                     }
                                 } else {
-                                    if (battlePage.selectLowestPowerAttack()) {
-                                        actionTaken = true;
-                                        lastActionWasAttack = true;
+                                    if (zeroDamageCount > 0) {
+                                        if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                            actionTaken = true;
+                                            lastActionWasAttack = true;
+                                        }
+                                    } else {
+                                        if (battlePage.selectLowestPowerAttack()) {
+                                            actionTaken = true;
+                                            lastActionWasAttack = true;
+                                        }
                                     }
                                 }
                             }
