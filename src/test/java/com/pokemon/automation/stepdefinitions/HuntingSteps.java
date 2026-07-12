@@ -225,8 +225,8 @@ public class HuntingSteps {
                     boolean lastActionWasAttack = false;
                     while(battleActive) {
                         loopCount++;
-                        if (loopCount > 150) {
-                            System.out.println("⚠️ BATTLE LOOP TIMEOUT! Breaking after 150 turns as a safety measure.");
+                        if (loopCount > 40) {
+                            System.out.println("⚠️ BATTLE LOOP TIMEOUT! Breaking after 40 turns as a safety measure.");
                             battleActive = false;
                             break;
                         }
