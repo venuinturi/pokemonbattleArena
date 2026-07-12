@@ -204,7 +204,7 @@ public class TrainerBattleSteps {
             while (true) {
                 System.out.println("Healing team and checking for Level 100 Pokemon...");
                 centerPage.healTeam();
-                centerPage.swapHighLevelForLowLevel(100, 0, 100);
+                centerPage.swapHighLevelForLegendaryOrSpecial(100);
                 
                 iNavigateToTheTrainersList();
                 mapPage.closeAdIfPresent();

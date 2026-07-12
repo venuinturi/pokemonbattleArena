@@ -353,8 +353,8 @@ public class HuntingSteps {
                     try { Thread.sleep(2000); } catch (Exception e) {}
                     try {
                         centerPage.healTeam();
-                        // User request: If any reaches level 11, swap with first available Pokemon >5 and < 10
-                        centerPage.swapHighLevelForLowLevel(11, 5, 10);
+                        // User request: Always replace pokemon with either special type or a legendary
+                        centerPage.swapHighLevelForLegendaryOrSpecial(11);
                     } catch (Exception e) {
                         System.out.println("Could not heal team or check levels: " + e.getMessage());
                     }
