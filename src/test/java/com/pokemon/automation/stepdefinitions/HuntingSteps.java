@@ -273,9 +273,9 @@ public class HuntingSteps {
                         }
                         
                         if (shouldCapture) {
-                            if (isLegendary || isSpecial) {
+                            if (isLegendary) {
                                 if (masterballAttemptCount < 1) {
-                                    System.out.println("Legendary/Special appeared! Using Masterball immediately!");
+                                    System.out.println("Legendary appeared! Using Masterball immediately!");
                                     battlePage.useMasterball();
                                     masterballAttemptCount++;
                                     actionTaken = true;
@@ -288,7 +288,7 @@ public class HuntingSteps {
                                     pokeballAttemptCount++;
                                     actionTaken = true;
                                 } else {
-                                    System.out.println("Out of balls for Legendary/Special! Have to attack...");
+                                    System.out.println("Out of balls for Legendary! Have to attack...");
                                     if (zeroDamageCount > 0) {
                                         if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                                             actionTaken = true;
