@@ -54,7 +54,7 @@ public class PokemonCenterPage extends BasePage {
             for (int i = 0; i < numTeamMembers; i++) {
                 int slotIndex = i + 1; // 1-indexed for ddParty
                 
-                if (maxLevelThreshold == 11 && (slotIndex == 5 || slotIndex == 6)) {
+                if (slotIndex == 5 || slotIndex == 6) {
                     continue;
                 }
                 
@@ -238,6 +238,9 @@ public class PokemonCenterPage extends BasePage {
             int numTeamMembers = teamTables.size();
             
             for (int i = 0; i < numTeamMembers; i++) {
+                // Skip slots 5 and 6 (which are index 4 and 5)
+                if (i >= 4) continue;
+                
                 // Re-fetch to avoid stale element reference
                 List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
                 if (currentTeamTables.isEmpty()) {
