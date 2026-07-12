@@ -182,7 +182,7 @@ public class PokemonCenterPage extends BasePage {
                 System.out.println("No suitable Pokemon (Level 20-30) found in PC for slot 5.");
             }
             
-            // Slot 6: level >50 and <70, whichever is first available
+            // Slot 6: level >= 50, whichever is first available
             pcOptions = (List<WebElement>) ((JavascriptExecutor) driver).executeScript("return document.getElementById('ddMon').options;");
             String slot6ReplacementValue = null;
             int firstValidLevel = -1;
@@ -195,7 +195,7 @@ public class PokemonCenterPage extends BasePage {
                 Matcher m = Pattern.compile("\\b(\\d{1,3})\\b").matcher(text);
                 while (m.find()) {
                     int val = Integer.parseInt(m.group(1));
-                    if (val > 50 && val < 70) {
+                    if (val >= 50) {
                         firstValidLevel = val;
                         slot6ReplacementValue = value;
                         break;
@@ -213,7 +213,7 @@ public class PokemonCenterPage extends BasePage {
                 System.out.println("Slot 6 swap executed successfully.");
                 configureNewPokemonAttacks(slot6ReplacementValue);
             } else {
-                System.out.println("No suitable Pokemon (Level 51-69) found in PC for slot 6.");
+                System.out.println("No suitable Pokemon (Level 50+) found in PC for slot 6.");
             }
             
         } catch (Exception e) {
