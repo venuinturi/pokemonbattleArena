@@ -111,7 +111,7 @@ public class TrainerBattleSteps {
                 int lastEnemyHp = -1;
                 int zeroDamageCount = 0;
                 
-                while (loopCount < 30) {
+                while (loopCount < 150) {
                     loopCount++;
                     boolean actionTaken = false;
                     
@@ -229,7 +229,7 @@ public class TrainerBattleSteps {
                     int lastEnemyHp = -1;
                     int zeroDamageCount = 0;
                     
-                    while (loopCount < 30) {
+                    while (loopCount < 150) {
                         loopCount++;
                         boolean actionTaken = false;
                         

@@ -225,8 +225,8 @@ public class HuntingSteps {
                     boolean lastActionWasAttack = false;
                     while(battleActive) {
                         loopCount++;
-                        if (loopCount > 15) {
-                            System.out.println("⚠️ BATTLE LOOP TIMEOUT! Breaking after 15 turns.");
+                        if (loopCount > 150) {
+                            System.out.println("⚠️ BATTLE LOOP TIMEOUT! Breaking after 150 turns as a safety measure.");
                             battleActive = false;
                             break;
                         }
@@ -278,7 +278,7 @@ public class HuntingSteps {
                                 battlePage.useMasterball();
                                 masterballAttemptCount++;
                                 actionTaken = true;
-                            } else if (enemyHp < 7 && enemyHp > 0) {
+                            } else if (enemyHp < 9 && enemyHp > 0) {
                                 if (pokeballAttemptCount < 4) {
                                     battlePage.usePokeball();
                                     pokeballAttemptCount++;
