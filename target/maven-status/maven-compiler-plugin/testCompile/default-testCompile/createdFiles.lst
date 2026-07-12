@@ -1,7 +1,7 @@
-com/pokemon/automation/stepdefinitions/LoginSteps.class
 com/pokemon/automation/stepdefinitions/TrainerBattleSteps.class
-com/pokemon/automation/DumpTrainers.class
-com/pokemon/automation/stepdefinitions/HuntingSteps.class
 com/pokemon/automation/runners/TestRunner.class
 com/pokemon/automation/debug/MyTeamsDumper.class
 com/pokemon/automation/stepdefinitions/Hooks.class
+com/pokemon/automation/stepdefinitions/LoginSteps.class
+com/pokemon/automation/DumpTrainers.class
+com/pokemon/automation/stepdefinitions/HuntingSteps.class

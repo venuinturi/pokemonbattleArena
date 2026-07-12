@@ -260,14 +260,25 @@ public class PokemonCenterPage extends BasePage {
             String replacementMonValue = null;
             try {
                 String[] legendaries = {
-                    "articuno", "zapdos", "moltres", "mewtwo", "mew",
-                    "raikou", "entei", "suicune", "lugia", "ho-oh", "celebi",
-                    "regirock", "regice", "registeel", "latias", "latios", "kyogre", "groudon", "rayquaza", "jirachi", "deoxys",
-                    "uxie", "mesprit", "azelf", "dialga", "palkia", "heatran", "regigigas", "giratina", "cresselia", "phione", "manaphy", "darkrai", "shaymin", "arceus",
-                    "victini", "cobalion", "terrakion", "virizion", "tornadus", "thundurus", "reshiram", "zekrom", "landorus", "kyurem", "keldeo", "meloetta", "genesect",
-                    "xerneas", "yveltal", "zygarde", "diancie", "hoopa", "volcanion",
-                    "type: null", "silvally", "tapu koko", "tapu lele", "tapu bulu", "tapu fini", "cosmog", "cosmoem", "solgaleo", "lunala", "nihilego", "buzzwole", "pheromosa", "xurkitree", "celesteela", "kartana", "guzzlord", "necrozma", "magearna", "marshadow", "poipole", "naganadel", "stakataka", "blacephalon", "zeraora", "meltan", "melmetal",
-                    "zacian", "zamazenta", "eternatus", "kubfu", "urshifu", "zarude", "regieleki", "regidrago", "glastrier", "spectrier", "calyrex", "enamorus"
+                    "arceus", "armored zygarde (10%)", "articuno", "azelf", "blacephalon",
+                    "buzzwole", "calyrex", "calyrex (ice rider)", "calyrex (shadow rider)", "celebi",
+                    "celesteela", "cobalion", "cosmog", "cosmoem", "cresselia", "darkrai", "deoxys",
+                    "dialga", "dialga (origin)", "diancie", "enamorus", "entei", "eternatus",
+                    "flutter mane", "galarian articuno", "galarian moltres", "galarian zapdos", "genesect", "giratina",
+                    "glastrier", "groudon", "guzzlord", "heatran", "ho-oh", "hoopa",
+                    "iron jugulis", "iron thorns", "jirachi", "kartana", "keldeo", "koraidon", "kubfu",
+                    "kyogre", "kyurem", "landorus", "latias", "latios",
+                    "lugia", "lunala", "magearna", "manaphy", "marshadow", "meloetta", "meltan", "melmetal", "mesprit", "mew", "mewtwo",
+                    "miraidon", "moltres", "naganadel", "necrozma", "nihilego", "palkia",
+                    "palkia (origin)", "pheromosa", "phione", "poipole", "raikou",
+                    "rayquaza", "regice", "regidrago", "regieleki", "regigigas",
+                    "regirock", "registeel", "reshiram", "rotom", "sandy shocks",
+                    "shaymin", "silvally", "solgaleo", "spectrier", "stakataka", "suicune", "tapu bulu",
+                    "tapu fini", "tapu koko", "tapu lele", "terrakion", "thu-fi-zer",
+                    "thundurus", "tornadus", "type: null", "urshifu", "uxie", "victini", "virizion", "volcanion",
+                    "xerneas", "xurkitree", "yveltal", "zacian", "zacian (crowned sword)", "zacian (hero)",
+                    "zamazenta", "zamazenta (crowned shield)", "zamazenta (hero)", "zapdos", "zarude", "zekrom", "zeraora", "zygarde", "zygarde (complete)",
+                    "zygarde 10%", "zygarde 50%"
                 };
 
                 String highestLevelMonValue = null;
