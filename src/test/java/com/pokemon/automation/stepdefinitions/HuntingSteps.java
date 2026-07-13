@@ -364,7 +364,7 @@ public class HuntingSteps {
                                         battlePage.useTimerBall();
                                         timerballAttemptCount++;
                                         actionTaken = true;
-                                    } else if (masterballAttemptCount < 1 && enemyLevel >= 60 && (!isLegendary || !isCaptured)) {
+                                    } else if (masterballAttemptCount < 1 && (!isLegendary || !isCaptured)) {
                                         battlePage.useMasterball();
                                         masterballAttemptCount++;
                                         actionTaken = true;
