@@ -576,6 +576,42 @@ public class BattlePage extends BasePage {
         }
     }
 
+    public void useRepeatBall() {
+        try {
+            java.util.List<WebElement> itemRows = driver.findElements(By.cssSelector("#myitems tr"));
+            for (WebElement row : itemRows) {
+                if (row.getText().toLowerCase().contains("repeat ball") || row.getText().toLowerCase().contains("repeatball")) {
+                    WebElement radio = row.findElement(By.tagName("input"));
+                    new org.openqa.selenium.interactions.Actions(driver).moveToElement(radio).click().perform();
+                    break;
+                }
+            }
+            WebElement useBtn = driver.findElement(By.xpath("//button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'use item')] | //button[contains(@onclick, 'useitem')] | //input[@value='Use Item']"));
+            new org.openqa.selenium.interactions.Actions(driver).moveToElement(useBtn).click().perform();
+            System.out.println("Used a Repeat Ball!");
+        } catch (Exception e) {
+            System.out.println("Failed to use Repeat Ball: " + e.getMessage());
+        }
+    }
+
+    public void useTimerBall() {
+        try {
+            java.util.List<WebElement> itemRows = driver.findElements(By.cssSelector("#myitems tr"));
+            for (WebElement row : itemRows) {
+                if (row.getText().toLowerCase().contains("timer ball") || row.getText().toLowerCase().contains("timerball")) {
+                    WebElement radio = row.findElement(By.tagName("input"));
+                    new org.openqa.selenium.interactions.Actions(driver).moveToElement(radio).click().perform();
+                    break;
+                }
+            }
+            WebElement useBtn = driver.findElement(By.xpath("//button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'use item')] | //button[contains(@onclick, 'useitem')] | //input[@value='Use Item']"));
+            new org.openqa.selenium.interactions.Actions(driver).moveToElement(useBtn).click().perform();
+            System.out.println("Used a Timer Ball!");
+        } catch (Exception e) {
+            System.out.println("Failed to use Timer Ball: " + e.getMessage());
+        }
+    }
+
     public int getPokeballCount() {
         try {
             java.util.List<WebElement> itemRows = driver.findElements(By.cssSelector("#myitems tr"));

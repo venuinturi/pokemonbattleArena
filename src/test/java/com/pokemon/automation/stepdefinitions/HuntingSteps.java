@@ -220,6 +220,8 @@ public class HuntingSteps {
                     int pokeballAttemptCount = 0;
                     int greatballAttemptCount = 0;
                     int masterballAttemptCount = 0;
+                    int repeatballAttemptCount = 0;
+                    int timerballAttemptCount = 0;
                     int faintedPokemonCount = 0;
                     int previousEnemyHp = -1;
                     int zeroDamageCount = 0;
@@ -290,6 +292,48 @@ public class HuntingSteps {
                                     actionTaken = true;
                                 } else {
                                     System.out.println("Out of balls for Legendary! Have to attack...");
+                                    if (zeroDamageCount > 0) {
+                                        if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                            actionTaken = true;
+                                            lastActionWasAttack = true;
+                                        }
+                                    } else {
+                                        if (battlePage.selectLowestPowerAttack()) {
+                                            actionTaken = true;
+                                            lastActionWasAttack = true;
+                                        }
+                                    }
+                                }
+                            } else if (isLegendary && isCaptured) {
+                                if (enemyHp < 20 && enemyHp > 0) {
+                                    if (greatballAttemptCount < 2) {
+                                        battlePage.useGreatball();
+                                        greatballAttemptCount++;
+                                        actionTaken = true;
+                                    } else if (repeatballAttemptCount < 5) {
+                                        battlePage.useRepeatBall();
+                                        repeatballAttemptCount++;
+                                        actionTaken = true;
+                                    } else if (timerballAttemptCount < 5) {
+                                        battlePage.useTimerBall();
+                                        timerballAttemptCount++;
+                                        actionTaken = true;
+                                    } else {
+                                        System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
+                                        if (zeroDamageCount > 0) {
+                                            if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                                actionTaken = true;
+                                                lastActionWasAttack = true;
+                                            }
+                                        } else {
+                                            if (battlePage.selectLowestPowerAttack()) {
+                                                actionTaken = true;
+                                                lastActionWasAttack = true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    // HP is >= 20, we need to weaken it
                                     if (zeroDamageCount > 0) {
                                         if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                                             actionTaken = true;
