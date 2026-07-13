@@ -40,7 +40,13 @@ public class DriverManager {
                     if ("true".equalsIgnoreCase(System.getProperty("headless"))) {
                         chromeOptions.addArguments("--headless=new");
                     }
-                    chromeOptions.addArguments("--window-size=1920,1080");
+                    if ("true".equalsIgnoreCase(System.getProperty("mobile"))) {
+                        java.util.Map<String, String> mobileEmulation = new java.util.HashMap<>();
+                        mobileEmulation.put("deviceName", "Pixel 5");
+                        chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
+                    } else {
+                        chromeOptions.addArguments("--window-size=1920,1080");
+                    }
                     driver = new ChromeDriver(chromeOptions);
                     break;
             }
