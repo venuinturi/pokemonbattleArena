@@ -348,13 +348,21 @@ public class HuntingSteps {
                                 }
                             } else {
                                 if (enemyHp < 9 && enemyHp > 0) {
-                                    if (pokeballAttemptCount < 4) {
+                                    if (pokeballAttemptCount < 2) {
                                         battlePage.usePokeball();
                                         pokeballAttemptCount++;
                                         actionTaken = true;
                                     } else if (greatballAttemptCount < 2) {
                                         battlePage.useGreatball();
                                         greatballAttemptCount++;
+                                        actionTaken = true;
+                                    } else if (repeatballAttemptCount < 1) {
+                                        battlePage.useRepeatBall();
+                                        repeatballAttemptCount++;
+                                        actionTaken = true;
+                                    } else if (timerballAttemptCount < 1) {
+                                        battlePage.useTimerBall();
+                                        timerballAttemptCount++;
                                         actionTaken = true;
                                     } else if (masterballAttemptCount < 1 && enemyLevel >= 60 && (!isLegendary || !isCaptured)) {
                                         battlePage.useMasterball();
