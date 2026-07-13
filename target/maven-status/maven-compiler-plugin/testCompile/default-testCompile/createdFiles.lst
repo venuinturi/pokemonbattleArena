@@ -1,4 +1,5 @@
 com/pokemon/automation/stepdefinitions/TrainerBattleSteps.class
+com/pokemon/automation/CheckCapturedLegendariesTest.class
 com/pokemon/automation/runners/TestRunner.class
 com/pokemon/automation/debug/MyTeamsDumper.class
 com/pokemon/automation/stepdefinitions/Hooks.class

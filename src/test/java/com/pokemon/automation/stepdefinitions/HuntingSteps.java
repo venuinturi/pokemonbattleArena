@@ -174,7 +174,8 @@ public class HuntingSteps {
                 boolean isSpecial = mapPage.isAnySpecialType();
                 boolean isMapLegendary = mapPage.isLegendary();
                 
-                if (mapPage.isPokemonAlreadyCaptured()) {
+                boolean isCaptured = mapPage.isPokemonAlreadyCaptured();
+                if (isCaptured) {
                     if (isSpecial || isMapLegendary) {
                         System.out.println("Wild Pokemon is captured, BUT it is legendary/special! Proceeding to battle.");
                         shouldBattle = true;
@@ -273,7 +274,7 @@ public class HuntingSteps {
                         }
                         
                         if (shouldCapture) {
-                            if (isLegendary) {
+                            if (isLegendary && !isCaptured) {
                                 if (masterballAttemptCount < 1) {
                                     System.out.println("Legendary appeared! Using Masterball immediately!");
                                     battlePage.useMasterball();
@@ -311,7 +312,7 @@ public class HuntingSteps {
                                         battlePage.useGreatball();
                                         greatballAttemptCount++;
                                         actionTaken = true;
-                                    } else if (masterballAttemptCount < 1 && enemyLevel >= 60) {
+                                    } else if (masterballAttemptCount < 1 && enemyLevel >= 60 && (!isLegendary || !isCaptured)) {
                                         battlePage.useMasterball();
                                         masterballAttemptCount++;
                                         actionTaken = true;
