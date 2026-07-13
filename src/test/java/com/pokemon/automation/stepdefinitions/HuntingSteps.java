@@ -276,64 +276,31 @@ public class HuntingSteps {
                         }
                         
                         if (shouldCapture) {
-                            if (isLegendary && !isCaptured) {
-                                if (masterballAttemptCount < 1) {
-                                    System.out.println("Legendary appeared! Using Masterball immediately!");
-                                    battlePage.useMasterball();
-                                    masterballAttemptCount++;
+                            int targetHp = isLegendary ? 20 : 9;
+                            if (enemyHp < targetHp && enemyHp > 0) {
+                                if (pokeballAttemptCount < 2) {
+                                    battlePage.usePokeball();
+                                    pokeballAttemptCount++;
                                     actionTaken = true;
                                 } else if (greatballAttemptCount < 2) {
                                     battlePage.useGreatball();
                                     greatballAttemptCount++;
                                     actionTaken = true;
-                                } else if (pokeballAttemptCount < 4) {
-                                    battlePage.usePokeball();
-                                    pokeballAttemptCount++;
+                                } else if (repeatballAttemptCount < 1) {
+                                    battlePage.useRepeatBall();
+                                    repeatballAttemptCount++;
+                                    actionTaken = true;
+                                } else if (timerballAttemptCount < 1) {
+                                    battlePage.useTimerBall();
+                                    timerballAttemptCount++;
+                                    actionTaken = true;
+                                } else if (masterballAttemptCount < 1 && ((isLegendary && !isCaptured) || (!isLegendary && !isCaptured && enemyLevel > 60))) {
+                                    System.out.println("Fallback to Masterball for uncaught legendary or high-level uncaught pokemon.");
+                                    battlePage.useMasterball();
+                                    masterballAttemptCount++;
                                     actionTaken = true;
                                 } else {
-                                    System.out.println("Out of balls for Legendary! Have to attack...");
-                                    if (zeroDamageCount > 0) {
-                                        if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
-                                            actionTaken = true;
-                                            lastActionWasAttack = true;
-                                        }
-                                    } else {
-                                        if (battlePage.selectLowestPowerAttack()) {
-                                            actionTaken = true;
-                                            lastActionWasAttack = true;
-                                        }
-                                    }
-                                }
-                            } else if (isLegendary && isCaptured) {
-                                if (enemyHp < 20 && enemyHp > 0) {
-                                    if (greatballAttemptCount < 2) {
-                                        battlePage.useGreatball();
-                                        greatballAttemptCount++;
-                                        actionTaken = true;
-                                    } else if (repeatballAttemptCount < 5) {
-                                        battlePage.useRepeatBall();
-                                        repeatballAttemptCount++;
-                                        actionTaken = true;
-                                    } else if (timerballAttemptCount < 5) {
-                                        battlePage.useTimerBall();
-                                        timerballAttemptCount++;
-                                        actionTaken = true;
-                                    } else {
-                                        System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
-                                        if (zeroDamageCount > 0) {
-                                            if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
-                                                actionTaken = true;
-                                                lastActionWasAttack = true;
-                                            }
-                                        } else {
-                                            if (battlePage.selectLowestPowerAttack()) {
-                                                actionTaken = true;
-                                                lastActionWasAttack = true;
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    // HP is >= 20, we need to weaken it
+                                    System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
                                     if (zeroDamageCount > 0) {
                                         if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                                             actionTaken = true;
@@ -347,52 +314,16 @@ public class HuntingSteps {
                                     }
                                 }
                             } else {
-                                if (enemyHp < 9 && enemyHp > 0) {
-                                    if (pokeballAttemptCount < 2) {
-                                        battlePage.usePokeball();
-                                        pokeballAttemptCount++;
+                                // HP is >= targetHp, we need to weaken it
+                                if (zeroDamageCount > 0) {
+                                    if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                                         actionTaken = true;
-                                    } else if (greatballAttemptCount < 2) {
-                                        battlePage.useGreatball();
-                                        greatballAttemptCount++;
-                                        actionTaken = true;
-                                    } else if (repeatballAttemptCount < 1) {
-                                        battlePage.useRepeatBall();
-                                        repeatballAttemptCount++;
-                                        actionTaken = true;
-                                    } else if (timerballAttemptCount < 1) {
-                                        battlePage.useTimerBall();
-                                        timerballAttemptCount++;
-                                        actionTaken = true;
-                                    } else if (masterballAttemptCount < 1 && (!isLegendary || !isCaptured)) {
-                                        battlePage.useMasterball();
-                                        masterballAttemptCount++;
-                                        actionTaken = true;
-                                    } else {
-                                        System.out.println("Max balls thrown! Abandoning capture and attacking to finish it off.");
-                                        if (zeroDamageCount > 0) {
-                                            if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
-                                                actionTaken = true;
-                                                lastActionWasAttack = true;
-                                            }
-                                        } else {
-                                            if (battlePage.selectLowestPowerAttack()) {
-                                                actionTaken = true;
-                                                lastActionWasAttack = true;
-                                            }
-                                        }
+                                        lastActionWasAttack = true;
                                     }
                                 } else {
-                                    if (zeroDamageCount > 0) {
-                                        if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
-                                            actionTaken = true;
-                                            lastActionWasAttack = true;
-                                        }
-                                    } else {
-                                        if (battlePage.selectLowestPowerAttack()) {
-                                            actionTaken = true;
-                                            lastActionWasAttack = true;
-                                        }
+                                    if (battlePage.selectLowestPowerAttack()) {
+                                        actionTaken = true;
+                                        lastActionWasAttack = true;
                                     }
                                 }
                             }
