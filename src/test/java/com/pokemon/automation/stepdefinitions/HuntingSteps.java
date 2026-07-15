@@ -364,7 +364,7 @@ public class HuntingSteps {
                     try {
                         centerPage.healTeam();
                         // User request: Always replace pokemon with either special type or a legendary
-                        centerPage.swapHighLevelForLegendaryOrSpecial(15);
+                        centerPage.swapHighLevelForLegendaryOrSpecial(11);
                     } catch (Exception e) {
                         System.out.println("Could not heal team or check levels: " + e.getMessage());
                     }
