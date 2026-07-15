@@ -209,6 +209,11 @@ public class HuntingSteps {
                         System.out.println("In battle! Enemy is " + enemyName + " (Level: " + enemyLevel + "). Attempting capture.");
                     }
                     
+                    if (shouldCapture) {
+                        battlePage.swapToLowestLevelPokemon();
+                        try { Thread.sleep(1000); } catch (Exception e) {}
+                    }
+                    
 
                     boolean battleActive = true;
                     int loopCount = 0;
