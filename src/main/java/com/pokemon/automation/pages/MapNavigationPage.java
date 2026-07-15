@@ -366,9 +366,9 @@ public class MapNavigationPage extends BasePage {
                 System.out.println("CAPTCHA auto-solved successfully!");
             } catch (Exception notSolvedEx) {
                 System.out.println("CAPTCHA requires manual intervention (image grid appeared).");
-                System.out.println("Waiting up to 30 seconds for manual CAPTCHA solve...");
+                System.out.println("Waiting up to 120 seconds (2 minutes) for manual CAPTCHA solve...");
                 try {
-                    org.openqa.selenium.support.ui.WebDriverWait manualCheck = new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(30));
+                    org.openqa.selenium.support.ui.WebDriverWait manualCheck = new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(120));
                     manualCheck.until(ExpectedConditions.invisibilityOf(verifyBtn));
                     System.out.println("CAPTCHA manually solved successfully! Resuming...");
                 } catch (Exception manualEx) {
