@@ -279,7 +279,12 @@ public class HuntingSteps {
                         if (shouldCapture) {
                             int targetHp = isLegendary ? 20 : 9;
                             if (enemyHp < targetHp && enemyHp > 0) {
-                                if (pokeballAttemptCount < 2) {
+                                if (isLegendary && !isCaptured && masterballAttemptCount < 1) {
+                                    System.out.println("Throwing Masterball first for uncaught legendary!");
+                                    battlePage.useMasterball();
+                                    masterballAttemptCount++;
+                                    actionTaken = true;
+                                } else if (pokeballAttemptCount < 2) {
                                     battlePage.usePokeball();
                                     pokeballAttemptCount++;
                                     actionTaken = true;
@@ -295,8 +300,8 @@ public class HuntingSteps {
                                     battlePage.useTimerBall();
                                     timerballAttemptCount++;
                                     actionTaken = true;
-                                } else if (masterballAttemptCount < 1 && ((isLegendary && !isCaptured) || (!isLegendary && !isCaptured && enemyLevel > 60))) {
-                                    System.out.println("Fallback to Masterball for uncaught legendary or high-level uncaught pokemon.");
+                                } else if (!isLegendary && !isCaptured && enemyLevel > 60 && masterballAttemptCount < 1) {
+                                    System.out.println("Fallback to Masterball for high-level uncaught pokemon.");
                                     battlePage.useMasterball();
                                     masterballAttemptCount++;
                                     actionTaken = true;
