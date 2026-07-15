@@ -279,16 +279,11 @@ public class HuntingSteps {
                         if (shouldCapture) {
                             int targetHp = isLegendary ? 20 : 9;
                             if (enemyHp < targetHp && enemyHp > 0) {
-                                if (isLegendary && !isCaptured && masterballAttemptCount < 1) {
-                                    System.out.println("Throwing Masterball first for uncaught legendary!");
-                                    battlePage.useMasterball();
-                                    masterballAttemptCount++;
-                                    actionTaken = true;
-                                } else if (pokeballAttemptCount < 2) {
+                                if (pokeballAttemptCount < 1) {
                                     battlePage.usePokeball();
                                     pokeballAttemptCount++;
                                     actionTaken = true;
-                                } else if (greatballAttemptCount < 2) {
+                                } else if (greatballAttemptCount < 1) {
                                     battlePage.useGreatball();
                                     greatballAttemptCount++;
                                     actionTaken = true;
@@ -300,8 +295,8 @@ public class HuntingSteps {
                                     battlePage.useTimerBall();
                                     timerballAttemptCount++;
                                     actionTaken = true;
-                                } else if (!isLegendary && !isCaptured && enemyLevel > 60 && masterballAttemptCount < 1) {
-                                    System.out.println("Fallback to Masterball for high-level uncaught pokemon.");
+                                } else if (masterballAttemptCount < 1 && ((isLegendary && !isCaptured) || (!isLegendary && !isCaptured && enemyLevel > 60))) {
+                                    System.out.println("Fallback to Masterball for uncaught legendary or high-level uncaught pokemon.");
                                     battlePage.useMasterball();
                                     masterballAttemptCount++;
                                     actionTaken = true;
