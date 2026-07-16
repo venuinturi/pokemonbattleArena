@@ -30,10 +30,114 @@ public class FarmingBattleSteps {
         this.mapPage = new MapNavigationPage(driver);
     }
 
-    @Given("I determine the absolute most profitable known trainer")
-    public void iDetermineTheAbsoluteMostProfitableKnownTrainer() {
-        System.out.println("Determining the best trainer to farm based on past battles...");
+    @When("I identify and farm the highest paying trainer")
+    public void iIdentifyAndFarmTheHighestPayingTrainer() {
+        boolean failedBattle = false;
+        System.out.println("--- PHASE 1: IDENTIFICATION ---");
+        List<String> allCategories = trainerPage.getAllConquestCategoryValues();
         
+        for (String categoryValue : allCategories) {
+            if (failedBattle) break;
+            
+            System.out.println("\nScanning Trainer Category: " + categoryValue);
+            int trainerIndex = 0;
+            int battleType = 3; // 3v3 battles
+            
+            while (!failedBattle) {
+                System.out.println("Healing team and setting up for identification battle...");
+                centerPage.healTeam();
+                centerPage.setupTeamForBattleSession();
+                
+                driver.get("https://pokemonbattlearena.net/members/trainers.php");
+                try { Thread.sleep(1000); } catch (Exception e) {}
+                mapPage.closeAdIfPresent();
+                
+                trainerPage.selectTrainerCategory(categoryValue);
+                try { Thread.sleep(1500); } catch (Exception e) {}
+                
+                int totalTrainers = trainerPage.getTrainerCount();
+                if (trainerIndex >= totalTrainers) {
+                    System.out.println("Finished all trainers in category " + categoryValue);
+                    break; // Move to next category
+                }
+                
+                String currentTrainerName = trainerPage.battleSpecificTrainer(trainerIndex, battleType);
+                if (currentTrainerName != null) {
+                    System.out.println("Checking for bot verification...");
+                    mapPage.handleBotCheckIfPresent();
+                    battlePage.resetBattleState();
+                    
+                    System.out.println("Now battling: " + currentTrainerName);
+                    
+                    int loopCount = 0;
+                    int failedActionCount = 0;
+                    int lastEnemyHp = -1;
+                    int zeroDamageCount = 0;
+                    
+                    while (loopCount < 40) {
+                        loopCount++;
+                        boolean actionTaken = false;
+                        
+                        if (battlePage.handleSelectMonsterScreen(battleType)) {
+                            actionTaken = true;
+                        }
+                        
+                        if (battlePage.isBattleComplete()) {
+                            break;
+                        }
+                        
+                        int currentEnemyHp = battlePage.getEnemyHp();
+                        if (currentEnemyHp == 0) {
+                            break;
+                        } else if (lastEnemyHp != -1 && currentEnemyHp == lastEnemyHp) {
+                            zeroDamageCount++;
+                        } else if (currentEnemyHp != lastEnemyHp) {
+                            zeroDamageCount = 0; 
+                            lastEnemyHp = currentEnemyHp;
+                        }
+                        
+                        if (zeroDamageCount >= 2) {
+                            if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
+                                actionTaken = true;
+                            }
+                        } else {
+                            if (battlePage.selectHighestPowerAttack()) {
+                                actionTaken = true;
+                            }
+                        }
+                        
+                        if (!actionTaken && !battlePage.isBattleComplete()) {
+                            failedActionCount++;
+                            if (failedActionCount >= 3) {
+                                break;
+                            }
+                        } else {
+                            failedActionCount = 0;
+                        }
+                        
+                        try { Thread.sleep(2500); } catch (Exception e) {}
+                    }
+                    
+                    if (battlePage.isBattleComplete() || loopCount >= 40 || failedActionCount >= 3) {
+                        int wonMoney = battlePage.getWonPokeMoney();
+                        if (wonMoney > 0) {
+                            System.out.println(currentTrainerName + " defeated! Reward: $" + wonMoney);
+                            TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                            battlePage.clickContinueIfPresent();
+                        } else {
+                            System.out.println("Failed to win battle against " + currentTrainerName + " (Reward: $0). Stopping identification phase.");
+                            failedBattle = true;
+                            battlePage.clickContinueIfPresent();
+                        }
+                    }
+                    trainerIndex++;
+                } else {
+                    trainerIndex++;
+                }
+            }
+        }
+        
+        System.out.println("\n--- PHASE 2: FARMING ---");
         java.util.Map<String, Integer> allStats = TrainerStatsManager.getAllStats();
         int maxMoney = -1;
         String bestTrainer = null;
@@ -46,41 +150,26 @@ public class FarmingBattleSteps {
         }
         
         bestTrainerName = bestTrainer;
-        
-        if (bestTrainerName != null) {
-            System.out.println("Absolute best trainer found: " + bestTrainerName + " with reward $" + maxMoney);
-        } else {
-            System.out.println("No known profitable trainers found in history. Farming cannot proceed.");
-        }
-    }
-
-    @When("I farm the most profitable trainer in an infinite loop")
-    public void iFarmTheMostProfitableTrainerInAnInfiniteLoop() {
         if (bestTrainerName == null) {
-            System.out.println("No trainer selected for farming. Exiting loop.");
+            System.out.println("No profitable trainers found in history. Exiting.");
             return;
         }
-
-        int totalBattles = 0;
         
-        // Store the categories so we can search through them
-        List<String> conquestCats = trainerPage.getAllConquestCategoryValues();
+        System.out.println("Highest paying trainer identified: " + bestTrainerName + " with reward $" + maxMoney);
+        int totalBattles = 0;
         
         while (true) {
             System.out.println("\n--- Starting Farming Battle #" + (totalBattles + 1) + " against " + bestTrainerName + " ---");
             
-            // 1. Heal and Check Team Setup
-            System.out.println("Healing team and setting up for battle...");
             centerPage.healTeam();
             centerPage.setupTeamForBattleSession();
             
-            // 2. Navigate back to Trainers
             driver.get("https://pokemonbattlearena.net/members/trainers.php");
             try { Thread.sleep(1000); } catch (Exception e) {}
             mapPage.closeAdIfPresent();
             
             boolean clicked = false;
-            for (String cat : conquestCats) {
+            for (String cat : allCategories) {
                 trainerPage.selectTrainerCategory(cat);
                 try { Thread.sleep(1500); } catch (Exception e) {}
                 
@@ -92,21 +181,17 @@ public class FarmingBattleSteps {
             
             if (!clicked) {
                 System.out.println("Could not click battle for " + bestTrainerName + ". They might be missing from this page.");
-                break; // Exit loop if trainer can't be found
+                break;
             }
             
-            System.out.println("Checking for bot verification after clicking trainer battle...");
             mapPage.handleBotCheckIfPresent();
             battlePage.resetBattleState();
-            
-            System.out.println("Now battling enemy Pokemon: " + battlePage.getEnemyName());
             
             int loopCount = 0;
             int failedActionCount = 0;
             int lastEnemyHp = -1;
             int zeroDamageCount = 0;
             
-            // 4. Battle Logic
             while (loopCount < 40) {
                 loopCount++;
                 boolean actionTaken = false;
@@ -116,24 +201,11 @@ public class FarmingBattleSteps {
                 }
                 
                 if (battlePage.isBattleComplete()) {
-                    int wonMoney = battlePage.getWonPokeMoney();
-                    if (wonMoney > 0) {
-                        TrainerStatsManager.saveReward(bestTrainerName, wonMoney);
-                    }
-                    battlePage.clickContinueIfPresent();
-                    System.out.println("Farming Battle ended! Clicked Continue.");
                     break;
                 }
                 
                 int currentEnemyHp = battlePage.getEnemyHp();
                 if (currentEnemyHp == 0) {
-                    if (battlePage.isBattleComplete()) {
-                        int wonMoney = battlePage.getWonPokeMoney();
-                        if (wonMoney > 0) {
-                            TrainerStatsManager.saveReward(bestTrainerName, wonMoney);
-                        }
-                        battlePage.clickContinueIfPresent();
-                    }
                     break;
                 } else if (lastEnemyHp != -1 && currentEnemyHp == lastEnemyHp) {
                     zeroDamageCount++;
@@ -143,7 +215,6 @@ public class FarmingBattleSteps {
                 }
                 
                 if (zeroDamageCount >= 2) {
-                    System.out.println("Potential 0 damage detected. Using alternative attack...");
                     if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                         actionTaken = true;
                     }
@@ -156,7 +227,6 @@ public class FarmingBattleSteps {
                 if (!actionTaken && !battlePage.isBattleComplete()) {
                     failedActionCount++;
                     if (failedActionCount >= 3) {
-                        System.out.println("No attacks available for 3 consecutive loops. Assuming battle is over.");
                         break;
                     }
                 } else {
@@ -166,7 +236,6 @@ public class FarmingBattleSteps {
                 try { Thread.sleep(2500); } catch (Exception e) {}
             }
             
-            // Final check
             if (battlePage.isBattleComplete()) {
                 int wonMoney = battlePage.getWonPokeMoney();
                 if (wonMoney > 0) {
@@ -177,7 +246,6 @@ public class FarmingBattleSteps {
             
             totalBattles++;
             if (totalBattles % 20 == 0) {
-                System.out.println(totalBattles + " battles completed! Refreshing all attacks for active team...");
                 centerPage.configureAllActiveTeamAttacks();
             }
             
