@@ -6,6 +6,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
 
 import java.util.List;
 
@@ -66,14 +70,23 @@ public class TrainerListPage extends BasePage {
 
     public void selectTrainerCategory(String value) {
         try {
+            // Aggressively remove Google Ads that block the dropdown in non-headless mode
+            try {
+                ((JavascriptExecutor) driver).executeScript(
+                    "document.querySelectorAll('ins.adsbygoogle').forEach(e => e.remove());" +
+                    "document.querySelectorAll('.adsbygoogle').forEach(e => e.remove());" +
+                    "document.querySelectorAll('iframe').forEach(e => e.remove());"
+                );
+            } catch (Exception e) {}
+
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("dropdown-ts-control")));
+            
             // 1. Try TomSelect visual interaction directly
             try {
                 WebElement control = driver.findElement(By.id("dropdown-ts-control"));
                 control.click();
                 Thread.sleep(500); // Wait for options to render
                 
-                WebElement optionToClick = driver.findElement(By.xpath("//div[contains(@class, 'ts-dropdown')]//div[contains(@class, 'option') and (@data-value='" + value + "' or @data-selectable)]"));
-                // Since data-value might not exactly match if the xpath is strict, let's find it by iterating:
                 java.util.List<WebElement> options = driver.findElements(By.cssSelector("div.ts-dropdown div.option, div.ts-dropdown-content div.option"));
                 boolean clicked = false;
                 for (WebElement opt : options) {
@@ -111,7 +124,7 @@ public class TrainerListPage extends BasePage {
                              "}");
             Thread.sleep(1500);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Could not select trainer category: " + e.getMessage());
         }
     }
 

@@ -186,6 +186,11 @@ public class FarmingBattleSteps {
             
             int currentEnemyHp = battlePage.getEnemyHp();
             if (currentEnemyHp == 0) {
+                // Wait a few seconds for the results screen to load since the enemy fainted
+                for (int w = 0; w < 5; w++) {
+                    if (battlePage.isBattleComplete()) break;
+                    try { Thread.sleep(1000); } catch (Exception e) {}
+                }
                 break;
             } else if (lastEnemyHp != -1 && currentEnemyHp == lastEnemyHp) {
                 zeroDamageCount++;
@@ -217,6 +222,12 @@ public class FarmingBattleSteps {
         }
         
         int wonMoney = 0;
+        // Check one last time with a small wait just in case
+        for (int w = 0; w < 3; w++) {
+            if (battlePage.isBattleComplete()) break;
+            try { Thread.sleep(1000); } catch (Exception e) {}
+        }
+        
         if (battlePage.isBattleComplete() || loopCount >= 40 || failedActionCount >= 3) {
             wonMoney = battlePage.getWonPokeMoney();
             battlePage.clickContinueIfPresent();
