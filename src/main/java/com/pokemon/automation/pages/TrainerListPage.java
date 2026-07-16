@@ -46,6 +46,25 @@ public class TrainerListPage extends BasePage {
         return gymLeaderValues;
     }
 
+    public java.util.List<String> getAllConquestCategoryValues() {
+        java.util.List<String> conquestValues = new java.util.ArrayList<>();
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            long length = (long) js.executeScript("return document.getElementById('dropdown').options.length;");
+            
+            for (long i = 0; i < length; i++) {
+                String text = (String) js.executeScript("return document.getElementById('dropdown').options[" + i + "].text;");
+                if (text != null && text.toLowerCase().contains("conquest")) {
+                    String val = (String) js.executeScript("return document.getElementById('dropdown').options[" + i + "].value;");
+                    conquestValues.add(val);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return conquestValues;
+    }
+
     public void selectTrainerCategory(String value) {
         try {
             // 1. Try TomSelect visual interaction directly

@@ -30,19 +30,27 @@ public class FarmingBattleSteps {
         this.mapPage = new MapNavigationPage(driver);
     }
 
-    @Given("I determine the most profitable trainer on the page")
-    public void iDetermineTheMostProfitableTrainerOnThePage() {
-        System.out.println("Determining the best trainer to farm...");
-        List<String> trainers = trainerPage.getAllTrainersOnPage();
-        bestTrainerName = TrainerStatsManager.getBestTrainer(trainers);
+    @Given("I determine the absolute most profitable known trainer")
+    public void iDetermineTheAbsoluteMostProfitableKnownTrainer() {
+        System.out.println("Determining the best trainer to farm based on past battles...");
+        
+        java.util.Map<String, Integer> allStats = TrainerStatsManager.getAllStats();
+        int maxMoney = -1;
+        String bestTrainer = null;
+        
+        for (java.util.Map.Entry<String, Integer> entry : allStats.entrySet()) {
+            if (entry.getValue() > maxMoney) {
+                maxMoney = entry.getValue();
+                bestTrainer = entry.getKey();
+            }
+        }
+        
+        bestTrainerName = bestTrainer;
         
         if (bestTrainerName != null) {
-            System.out.println("Best trainer found: " + bestTrainerName + " with reward $" + TrainerStatsManager.getReward(bestTrainerName));
+            System.out.println("Absolute best trainer found: " + bestTrainerName + " with reward $" + maxMoney);
         } else {
-            System.out.println("No known profitable trainers on this page. Defaulting to the first available.");
-            if (!trainers.isEmpty()) {
-                bestTrainerName = trainers.get(0);
-            }
+            System.out.println("No known profitable trainers found in history. Farming cannot proceed.");
         }
     }
 
@@ -54,6 +62,9 @@ public class FarmingBattleSteps {
         }
 
         int totalBattles = 0;
+        
+        // Store the categories so we can search through them
+        List<String> conquestCats = trainerPage.getAllConquestCategoryValues();
         
         while (true) {
             System.out.println("\n--- Starting Farming Battle #" + (totalBattles + 1) + " against " + bestTrainerName + " ---");
@@ -68,8 +79,17 @@ public class FarmingBattleSteps {
             try { Thread.sleep(1000); } catch (Exception e) {}
             mapPage.closeAdIfPresent();
             
-            // 3. Battle the chosen trainer (defaults to 1v1 for fastest farming)
-            boolean clicked = trainerPage.battleSpecificTrainerByName(bestTrainerName, 1);
+            boolean clicked = false;
+            for (String cat : conquestCats) {
+                trainerPage.selectTrainerCategory(cat);
+                try { Thread.sleep(1500); } catch (Exception e) {}
+                
+                clicked = trainerPage.battleSpecificTrainerByName(bestTrainerName, 1);
+                if (clicked) {
+                    break;
+                }
+            }
+            
             if (!clicked) {
                 System.out.println("Could not click battle for " + bestTrainerName + ". They might be missing from this page.");
                 break; // Exit loop if trainer can't be found

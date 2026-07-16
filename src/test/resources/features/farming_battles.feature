@@ -3,8 +3,10 @@ Feature: Trainer Farming
   I want to automatically farm the highest paying trainer on the current trainer page
   So that I can maximize my PokeMoney earnings.
 
-  Scenario: Infinite loop farming of the most profitable trainer
-    Given I log into Pokemon Battle Arena
+  Scenario: Identify and farm the most profitable Conquest trainer
+    Given I am on the home page
+    When I login with secure credentials
     And I navigate to the trainers list
-    And I determine the most profitable trainer on the page
+    And I battle all Conquest trainers from the dropdown
+    And I determine the absolute most profitable known trainer
     When I farm the most profitable trainer in an infinite loop

@@ -47,6 +47,7 @@ public class DriverManager {
                     } else {
                         chromeOptions.addArguments("--window-size=1920,1080");
                     }
+                    chromeOptions.setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy.EAGER);
                     driver = new ChromeDriver(chromeOptions);
                     break;
             }
