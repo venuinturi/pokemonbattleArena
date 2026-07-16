@@ -65,14 +65,9 @@ public class TrainerBattleSteps {
                 }
             }
 
-            System.out.println("Healing team and checking for Level 90+ Pokemon...");
+            System.out.println("Healing team and setting up for battle...");
             centerPage.healTeam();
-            boolean swapped = centerPage.swapHighLevelForLegendaryOrSpecial(90, 5);
-            
-            if (swapped) {
-                com.pokemon.automation.pages.MyTeamsPage teamsPage = new com.pokemon.automation.pages.MyTeamsPage(driver);
-                teamsPage.updateBattleTeam("battleteam1");
-            }
+            centerPage.setupTeamForBattleSession();
             
             iNavigateToTheTrainersList();
             
@@ -203,9 +198,9 @@ public class TrainerBattleSteps {
             int battleType = 1;
             
             while (true) {
-                System.out.println("Healing team and checking for Level 100 Pokemon...");
+                System.out.println("Healing team and setting up for battle...");
                 centerPage.healTeam();
-                centerPage.swapHighLevelForLegendaryOrSpecial(100, 5);
+                centerPage.setupTeamForBattleSession();
                 
                 iNavigateToTheTrainersList();
                 mapPage.closeAdIfPresent();

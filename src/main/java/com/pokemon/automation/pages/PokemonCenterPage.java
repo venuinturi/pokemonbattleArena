@@ -214,94 +214,7 @@ public class PokemonCenterPage extends BasePage {
             System.out.println("No Pokemon >= Level " + maxLevelThreshold + " found in active team. Continuing.");
         }
     }
-    
-    public void setupSpecificTeamSlots5And6() {
-        if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
-            driver.get("https://pokemonbattlearena.net/members/pokemoncenter.php");
-            try { Thread.sleep(1000); } catch (Exception e) {}
-        }
-        
-        System.out.println("Setting up team slots 5 and 6 according to specific rules...");
-        
-        // Slot 5: level between 20-30, whichever is the lowest
-        try {
-            List<WebElement> pcOptions = (List<WebElement>) ((JavascriptExecutor) driver).executeScript("return document.getElementById('ddMon').options;");
-            String slot5ReplacementValue = null;
-            int lowestLevel = 999;
-            
-            for (WebElement option : pcOptions) {
-                String text = option.getAttribute("textContent");
-                String value = option.getAttribute("value");
-                if (value == null || value.trim().isEmpty() || text == null || text.contains("Empty Slot")) continue;
-                
-                Matcher m = Pattern.compile("\\b(\\d{1,3})\\b").matcher(text);
-                while (m.find()) {
-                    int val = Integer.parseInt(m.group(1));
-                    if (val >= 20 && val <= 30) {
-                        if (val < lowestLevel) {
-                            lowestLevel = val;
-                            slot5ReplacementValue = value;
-                        }
-                    }
-                }
-            }
-            
-            if (slot5ReplacementValue != null) {
-                System.out.println("Swapping slot 5 with PC Pokemon of level " + lowestLevel);
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('ddParty').value = '5';");
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('ddMon').value = arguments[0];", slot5ReplacementValue);
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('frmSwap').submit();");
-                Thread.sleep(3000); // Wait for swap to complete
-                System.out.println("Slot 5 swap executed successfully.");
-                configureNewPokemonAttacks(slot5ReplacementValue);
-                
-                // Return back to center page to do slot 6
-                if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
-                    driver.get("https://pokemonbattlearena.net/members/pokemoncenter.php");
-                    Thread.sleep(1000);
-                }
-            } else {
-                System.out.println("No suitable Pokemon (Level 20-30) found in PC for slot 5.");
-            }
-            
-            // Slot 6: level >= 50, whichever is first available
-            pcOptions = (List<WebElement>) ((JavascriptExecutor) driver).executeScript("return document.getElementById('ddMon').options;");
-            String slot6ReplacementValue = null;
-            int firstValidLevel = -1;
-            
-            for (WebElement option : pcOptions) {
-                String text = option.getAttribute("textContent");
-                String value = option.getAttribute("value");
-                if (value == null || value.trim().isEmpty() || text == null || text.contains("Empty Slot")) continue;
-                
-                Matcher m = Pattern.compile("\\b(\\d{1,3})\\b").matcher(text);
-                while (m.find()) {
-                    int val = Integer.parseInt(m.group(1));
-                    if (val >= 50) {
-                        firstValidLevel = val;
-                        slot6ReplacementValue = value;
-                        break;
-                    }
-                }
-                if (slot6ReplacementValue != null) break;
-            }
-            
-            if (slot6ReplacementValue != null) {
-                System.out.println("Swapping slot 6 with PC Pokemon of level " + firstValidLevel);
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('ddParty').value = '6';");
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('ddMon').value = arguments[0];", slot6ReplacementValue);
-                ((JavascriptExecutor) driver).executeScript("document.getElementById('frmSwap').submit();");
-                Thread.sleep(3000); // Wait for swap to complete
-                System.out.println("Slot 6 swap executed successfully.");
-                configureNewPokemonAttacks(slot6ReplacementValue);
-            } else {
-                System.out.println("No suitable Pokemon (Level 50+) found in PC for slot 6.");
-            }
-            
-        } catch (Exception e) {
-            System.out.println("Error setting up team slots 5 and 6: " + e.getMessage());
-        }
-    }
+
     
     public boolean swapHighLevelForLegendaryOrSpecial(int maxLevelThreshold, int slotsToCheck) {
         if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
@@ -424,6 +337,166 @@ public class PokemonCenterPage extends BasePage {
             System.out.println("No Pokemon >= Level " + maxLevelThreshold + " found in active team. Continuing.");
         }
         return false;
+    }
+
+    private String getPCPokemonValue(int minLevel, int maxLevel, boolean mustBeSpecialOrLegendary) {
+        String highestLevelMonValue = null;
+        int maxLevelFound = -1;
+        try {
+            List<WebElement> pcOptions = (List<WebElement>) ((JavascriptExecutor) driver).executeScript("return document.getElementById('ddMon').options;");
+            for (WebElement option : pcOptions) {
+                String text = option.getAttribute("textContent");
+                String value = option.getAttribute("value");
+                if (value == null || value.trim().isEmpty() || text == null || text.contains("Empty Slot")) continue;
+                
+                int level = -1;
+                java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\b(\\d{1,3})\\b").matcher(text);
+                if (m.find()) {
+                    level = Integer.parseInt(m.group(1));
+                }
+                
+                if (level >= minLevel && level <= maxLevel) {
+                    boolean meetsSpecialReq = !mustBeSpecialOrLegendary || isLegendaryOrSpecial(text);
+                    if (meetsSpecialReq) {
+                        if (level > maxLevelFound) {
+                            maxLevelFound = level;
+                            highestLevelMonValue = value;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error parsing PC Pokemon: " + e.getMessage());
+        }
+        return highestLevelMonValue;
+    }
+
+    private void executeSwap(int slotIndex, String pcValue) {
+        try {
+            ((JavascriptExecutor) driver).executeScript("document.getElementById('ddParty').value = arguments[0];", String.valueOf(slotIndex));
+            ((JavascriptExecutor) driver).executeScript("document.getElementById('ddMon').value = arguments[0];", pcValue);
+            ((JavascriptExecutor) driver).executeScript("document.getElementById('frmSwap').submit();");
+            Thread.sleep(3000);
+            System.out.println("Swap executed successfully for slot " + slotIndex);
+            configureNewPokemonAttacks(pcValue);
+        } catch (Exception e) {
+            System.out.println("Failed to execute swap: " + e.getMessage());
+        }
+    }
+
+    public boolean setupTeamForBattleSession() {
+        if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
+            driver.get("https://pokemonbattlearena.net/members/pokemoncenter.php");
+            try { Thread.sleep(1000); } catch (Exception e) {}
+        }
+        
+        System.out.println("Setting up team for Battle Session (Slots 1-6)...");
+        boolean swappedAny = false;
+        
+        try {
+            List<WebElement> teamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+            if (teamTables.isEmpty()) {
+                teamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+            }
+            int numTeamMembers = teamTables.size();
+            
+            for (int i = 0; i < numTeamMembers && i < 6; i++) {
+                List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+                if (currentTeamTables.isEmpty()) {
+                    currentTeamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+                }
+                if (i >= currentTeamTables.size()) continue;
+                
+                WebElement supElement = currentTeamTables.get(i);
+                String lvlStr = supElement.getText().replaceAll("[^0-9]", "");
+                int level = !lvlStr.isEmpty() ? Integer.parseInt(lvlStr) : -1;
+                
+                WebElement tdElement = supElement.findElement(By.xpath("./.."));
+                String fullName = tdElement.getText();
+                boolean isLegOrSpec = isLegendaryOrSpecial(fullName);
+                
+                if (level >= 100 || !isLegOrSpec) {
+                    System.out.println("Slot " + (i+1) + " (Lvl " + level + ") needs swap. Looking for replacement.");
+                    String replacement = getPCPokemonValue(1, 99, true);
+                    if (replacement != null) {
+                        executeSwap(i + 1, replacement);
+                        swappedAny = true;
+                    } else {
+                        System.out.println("Could not find suitable replacement for Slot " + (i+1));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error setting up battle team: " + e.getMessage());
+        }
+        return swappedAny;
+    }
+
+    public boolean setupTeamForHuntingSession() {
+        if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
+            driver.get("https://pokemonbattlearena.net/members/pokemoncenter.php");
+            try { Thread.sleep(1000); } catch (Exception e) {}
+        }
+        
+        System.out.println("Setting up team for Hunting Session...");
+        boolean swappedAny = false;
+        
+        try {
+            List<WebElement> teamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+            if (teamTables.isEmpty()) {
+                teamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+            }
+            int numTeamMembers = teamTables.size();
+            
+            for (int i = 0; i < numTeamMembers && i < 6; i++) {
+                List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
+                if (currentTeamTables.isEmpty()) {
+                    currentTeamTables = driver.findElements(By.xpath("//td[contains(., 'lvl')]/sup"));
+                }
+                if (i >= currentTeamTables.size()) continue;
+                
+                WebElement supElement = currentTeamTables.get(i);
+                String lvlStr = supElement.getText().replaceAll("[^0-9]", "");
+                int level = !lvlStr.isEmpty() ? Integer.parseInt(lvlStr) : -1;
+                
+                WebElement tdElement = supElement.findElement(By.xpath("./.."));
+                String fullName = tdElement.getText();
+                boolean isLegOrSpec = isLegendaryOrSpecial(fullName);
+                
+                int slot = i + 1;
+                boolean needsSwap = false;
+                int minLvlReq = 1;
+                int maxLvlReq = 99;
+                
+                if (slot >= 1 && slot <= 4) {
+                    minLvlReq = 6;
+                    maxLvlReq = 11;
+                    if (level < 6 || level > 11 || !isLegOrSpec) needsSwap = true;
+                } else if (slot == 5) {
+                    minLvlReq = 21;
+                    maxLvlReq = 29;
+                    if (level < 21 || level >= 30 || !isLegOrSpec) needsSwap = true;
+                } else if (slot == 6) {
+                    minLvlReq = 51;
+                    maxLvlReq = 99;
+                    if (level < 51 || level >= 100 || !isLegOrSpec) needsSwap = true;
+                }
+                
+                if (needsSwap) {
+                    System.out.println("Hunting Slot " + slot + " (Lvl " + level + ") needs swap. Target range: " + minLvlReq + "-" + maxLvlReq);
+                    String replacement = getPCPokemonValue(minLvlReq, maxLvlReq, true);
+                    if (replacement != null) {
+                        executeSwap(slot, replacement);
+                        swappedAny = true;
+                    } else {
+                        System.out.println("Could not find suitable replacement for Hunting Slot " + slot);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error setting up hunting team: " + e.getMessage());
+        }
+        return swappedAny;
     }
 
     private void configureNewPokemonAttacks(String pokemonId) {

@@ -62,7 +62,7 @@ public class HuntingSteps {
     @Given("I setup pokemon team slots 5 and 6 with specific level pokemons")
     public void iSetupPokemonTeamSlots5And6() {
         com.pokemon.automation.pages.PokemonCenterPage centerPage = new com.pokemon.automation.pages.PokemonCenterPage(driver);
-        centerPage.setupSpecificTeamSlots5And6();
+        centerPage.setupTeamForHuntingSession();
     }
 
     @Given("I navigate to the map")
@@ -372,7 +372,7 @@ public class HuntingSteps {
                     try {
                         centerPage.healTeam();
                         // User request: Always replace pokemon with either special type or a legendary
-                        centerPage.swapHighLevelForLegendaryOrSpecial(11, 4);
+                        centerPage.setupTeamForHuntingSession();
                     } catch (Exception e) {
                         System.out.println("Could not heal team or check levels: " + e.getMessage());
                     }
