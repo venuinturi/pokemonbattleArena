@@ -199,7 +199,11 @@ public class FarmingBattleSteps {
                 lastEnemyHp = currentEnemyHp;
             }
             
-            if (zeroDamageCount >= 2) {
+            if (battlePage.isContinuePresent()) {
+                battlePage.clickContinueIfPresent();
+                actionTaken = true;
+                zeroDamageCount = 0; // reset
+            } else if (zeroDamageCount >= 2) {
                 if (battlePage.selectAlternativeAttack(zeroDamageCount)) {
                     actionTaken = true;
                 }

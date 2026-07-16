@@ -638,7 +638,8 @@ public class BattlePage extends BasePage {
     public boolean isBattleComplete() {
         try {
             String bodyText = driver.findElement(org.openqa.selenium.By.tagName("body")).getText().toLowerCase();
-            if (bodyText.contains("you have won the match") || bodyText.contains("you lost") || bodyText.contains("you won") || bodyText.contains("defeated")) {
+            // Look for specific end-of-battle phrases, avoid generic words like "defeated"
+            if (bodyText.contains("you have won the pokemon battle") || bodyText.contains("you have won the match") || bodyText.contains("you lost the match") || bodyText.contains("you have lost the match") || bodyText.contains("you lost the pokemon battle")) {
                 return true;
             }
             return isContinuePresent();
@@ -650,10 +651,15 @@ public class BattlePage extends BasePage {
     public int getWonPokeMoney() {
         try {
             String bodyText = driver.findElement(org.openqa.selenium.By.tagName("body")).getText();
-            // Expected format: "You have won the match and received $1,500!" or similar.
-            java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\$([0-9,]+)").matcher(bodyText);
-            if (m.find()) {
-                String moneyStr = m.group(1).replace(",", "");
+            // Expected format: "You won 2500 Pokemoney" or "received $1,500!"
+            java.util.regex.Matcher m1 = java.util.regex.Pattern.compile("(?i)won\\s+([0-9,]+)\\s+pokemoney").matcher(bodyText);
+            if (m1.find()) {
+                String moneyStr = m1.group(1).replace(",", "");
+                return Integer.parseInt(moneyStr);
+            }
+            java.util.regex.Matcher m2 = java.util.regex.Pattern.compile("\\$([0-9,]+)").matcher(bodyText);
+            if (m2.find()) {
+                String moneyStr = m2.group(1).replace(",", "");
                 return Integer.parseInt(moneyStr);
             }
         } catch (Exception e) {
@@ -664,7 +670,8 @@ public class BattlePage extends BasePage {
 
     public boolean isContinuePresent() {
         try {
-            String xpath = "//input[@value='Continue'] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //*[contains(@class, 'continue-button')]";
+            // We want to match explicitly the submit button or a distinct continue button that appears in the content area, not generic nav links
+            String xpath = "//input[@type='submit' and @value='Continue'] | //button[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='continue'] | //a[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='return to map'] | //*[contains(@class, 'continue-button')]";
             List<WebElement> continues = driver.findElements(By.xpath(xpath));
             for (WebElement el : continues) {
                 if (el.isDisplayed()) return true;
@@ -677,7 +684,7 @@ public class BattlePage extends BasePage {
 
     public void clickContinueIfPresent() {
         try {
-            String xpath = "//input[@value='Continue'] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //*[contains(@class, 'continue-button')]";
+            String xpath = "//input[@type='submit' and @value='Continue'] | //button[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='continue'] | //a[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='return to map'] | //*[contains(@class, 'continue-button')]";
             List<WebElement> continues = driver.findElements(By.xpath(xpath));
             for (WebElement el : continues) {
                 if (el.isDisplayed()) {

@@ -172,9 +172,17 @@ public class TrainerListPage extends BasePage {
             List<WebElement> rows = driver.findElements(By.xpath("//tr[.//button[contains(@onclick, 'BT=1')]]"));
             if (trainerIndex < rows.size()) {
                 WebElement row = rows.get(trainerIndex);
-                String trainerName = "Unknown Trainer";
+                String trainerName = "";
                 try {
-                    trainerName = row.findElement(By.xpath(".//td[1]")).getText().trim();
+                    List<WebElement> tds = row.findElements(By.tagName("td"));
+                    for (WebElement td : tds) {
+                        String text = td.getText().trim();
+                        if (!text.isEmpty()) {
+                            trainerName = text;
+                            break;
+                        }
+                    }
+                    if (trainerName.isEmpty()) trainerName = "Unknown Trainer " + trainerIndex;
                 } catch(Exception e) {}
                 
                 List<WebElement> btns = row.findElements(By.xpath(".//button[contains(@onclick, 'BT=" + battleType + "')]"));
