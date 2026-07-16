@@ -84,7 +84,7 @@ public class FarmingBattleSteps {
                 trainerPage.selectTrainerCategory(cat);
                 try { Thread.sleep(1500); } catch (Exception e) {}
                 
-                clicked = trainerPage.battleSpecificTrainerByName(bestTrainerName, 1);
+                clicked = trainerPage.battleSpecificTrainerByName(bestTrainerName, 3);
                 if (clicked) {
                     break;
                 }
@@ -111,7 +111,7 @@ public class FarmingBattleSteps {
                 loopCount++;
                 boolean actionTaken = false;
                 
-                if (battlePage.handleSelectMonsterScreen(1)) {
+                if (battlePage.handleSelectMonsterScreen(3)) {
                     actionTaken = true;
                 }
                 

@@ -342,7 +342,7 @@ public class TrainerBattleSteps {
             System.out.println("\n--- Starting Conquest Category: " + categoryValue + " ---");
             currentCategoryValue = categoryValue;
             int trainerIndex = 0;
-            int battleType = 1; // Default to 1v1 for fastest identification
+            int battleType = 3; // 3v3 as requested for faster battles
             
             while (true) {
                 System.out.println("Healing team and setting up for battle...");
