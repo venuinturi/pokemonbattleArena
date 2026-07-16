@@ -197,6 +197,7 @@ public class HuntingSteps {
                     mapPage.handleBotCheckIfPresent();
                     
                     // Check if we need to select a monster first before entering the actual battle menu
+                    battlePage.resetBattleState();
                     battlePage.handleSelectMonsterScreen();
 
                     int enemyLevel = battlePage.getEnemyLevel();

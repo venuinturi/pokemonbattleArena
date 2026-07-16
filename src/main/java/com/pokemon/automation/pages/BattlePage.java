@@ -24,6 +24,12 @@ public class BattlePage extends BasePage {
         super(driver);
     }
 
+    private boolean isFirstMonsterPick = true;
+
+    public void resetBattleState() {
+        isFirstMonsterPick = true;
+    }
+
     public boolean selectLowestPowerAttack() {
         try {
             boolean attackSelected = false;
@@ -98,45 +104,14 @@ public class BattlePage extends BasePage {
                                     selectElement, valueToSelect);
                                 attackSelected = true;
                             }
-                        } else {
-                            // Target logic
-                            String name = selectElement.getAttribute("name");
-                            String id = selectElement.getAttribute("id");
-                            boolean isTarget = (name != null && name.toLowerCase().contains("target")) || (id != null && id.toLowerCase().contains("target"));
-                            
-                            if (isTarget || (!isAttackDropdown && options.size() > 0)) {
-                                java.util.List<WebElement> validOptions = new java.util.ArrayList<>();
-                                for (WebElement opt : options) {
-                                    String text = opt.getText().toLowerCase();
-                                    if (!text.trim().isEmpty() && !text.contains("select") && !text.contains("choose")) {
-                                        validOptions.add(opt);
-                                    }
-                                }
-                                
-                                if (!validOptions.isEmpty()) {
-                                    if (validOptions.size() <= 6) {
-                                        int optionToSelect = targetSelectionIndex % validOptions.size();
-                                        WebElement selectedOption = validOptions.get(optionToSelect);
-                                        String valueToSelect = selectedOption.getAttribute("value");
-                                        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
-                                            "var select = arguments[0]; var val = arguments[1];" +
-                                            "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')?.set;" +
-                                            "if (nativeSetter) { nativeSetter.call(select, val); } else { select.value = val; }" +
-                                            "var opts = select.options; for(var i=0; i<opts.length; i++) { if(opts[i].value == val) { select.selectedIndex = i; break; } }" +
-                                            "if(select.tomselect) { select.tomselect.setValue(val); select.tomselect.sync(); }" +
-                                            "select.dispatchEvent(new Event('change', { bubbles: true }));" +
-                                            "select.dispatchEvent(new Event('input', { bubbles: true }));", 
-                                            selectElement, valueToSelect);
-                                        targetSelectionIndex++;
-                                    }
-                                }
-                            }
                         }
                     } catch (Exception e) {
                         // ignore issues with a specific select element and move to the next
                     }
                 }
             }
+            
+            distributeTargets();
             
             // Click Attack button
             List<WebElement> attackBtns = driver.findElements(By.xpath("//input[contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //*[contains(@class, 'btn-danger') and contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')]"));
@@ -150,6 +125,61 @@ public class BattlePage extends BasePage {
         } catch (Exception ex) {
             System.out.println("Could not find attack element: " + ex.getMessage());
             return false;
+        }
+    }
+
+    private void distributeTargets() {
+        try {
+            List<WebElement> allSelects = driver.findElements(By.tagName("select"));
+            int targetSelectionIndex = 0;
+            
+            for (WebElement selectElement : allSelects) {
+                org.openqa.selenium.support.ui.Select dropdown = new org.openqa.selenium.support.ui.Select(selectElement);
+                List<WebElement> options = dropdown.getOptions();
+                if (options.isEmpty()) continue;
+                
+                // Make sure it's NOT an attack dropdown
+                boolean isAttackDropdown = false;
+                for (WebElement opt : options) {
+                    if (opt.getText().contains("Power: ")) {
+                        isAttackDropdown = true;
+                        break;
+                    }
+                }
+                if (isAttackDropdown) continue;
+                
+                String name = selectElement.getAttribute("name");
+                String id = selectElement.getAttribute("id");
+                boolean isTarget = (name != null && name.toLowerCase().contains("target")) || (id != null && id.toLowerCase().contains("target"));
+                
+                if (isTarget || options.size() > 0) {
+                    java.util.List<WebElement> validOptions = new java.util.ArrayList<>();
+                    for (WebElement opt : options) {
+                        String text = opt.getText().toLowerCase();
+                        if (!text.trim().isEmpty() && !text.contains("select") && !text.contains("choose")) {
+                            validOptions.add(opt);
+                        }
+                    }
+                    
+                    if (!validOptions.isEmpty() && validOptions.size() <= 6) {
+                        int optionToSelect = targetSelectionIndex % validOptions.size();
+                        WebElement selectedOption = validOptions.get(optionToSelect);
+                        String valueToSelect = selectedOption.getAttribute("value");
+                        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+                            "var select = arguments[0]; var val = arguments[1];" +
+                            "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')?.set;" +
+                            "if (nativeSetter) { nativeSetter.call(select, val); } else { select.value = val; }" +
+                            "var opts = select.options; for(var i=0; i<opts.length; i++) { if(opts[i].value == val) { select.selectedIndex = i; break; } }" +
+                            "if(select.tomselect) { select.tomselect.setValue(val); select.tomselect.sync(); }" +
+                            "select.dispatchEvent(new Event('change', { bubbles: true }));" +
+                            "select.dispatchEvent(new Event('input', { bubbles: true }));", 
+                            selectElement, valueToSelect);
+                        targetSelectionIndex++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error distributing targets: " + e.getMessage());
         }
     }
 
@@ -227,49 +257,14 @@ public class BattlePage extends BasePage {
                                     selectElement, valueToSelect);
                                 attackSelected = true;
                             }
-                        } else {
-                            // Check if it's a target dropdown (typically named 'target' or similar)
-                            String name = selectElement.getAttribute("name");
-                            String id = selectElement.getAttribute("id");
-                            boolean isTarget = (name != null && name.toLowerCase().contains("target")) || (id != null && id.toLowerCase().contains("target"));
-                            
-                            if (isTarget || (!isAttackDropdown && options.size() > 0)) {
-                                // Filter valid targets (avoid empty or "Select" options)
-                                java.util.List<WebElement> validOptions = new java.util.ArrayList<>();
-                                for (WebElement opt : options) {
-                                    String text = opt.getText().toLowerCase();
-                                    if (!text.trim().isEmpty() && !text.contains("select") && !text.contains("choose")) {
-                                        validOptions.add(opt);
-                                    }
-                                }
-                                
-                                if (!validOptions.isEmpty()) {
-                                    // Make sure we only assign targets in the battle area (usually 1-3 valid options)
-                                    if (validOptions.size() <= 6) {
-                                        int optionToSelect = targetSelectionIndex % validOptions.size();
-                                        WebElement selectedOption = validOptions.get(optionToSelect);
-                                        String valueToSelect = selectedOption.getAttribute("value");
-                                        
-                                        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
-                                            "var select = arguments[0]; var val = arguments[1];" +
-                                            "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')?.set;" +
-                                            "if (nativeSetter) { nativeSetter.call(select, val); } else { select.value = val; }" +
-                                            "var opts = select.options; for(var i=0; i<opts.length; i++) { if(opts[i].value == val) { select.selectedIndex = i; break; } }" +
-                                            "if(select.tomselect) { select.tomselect.setValue(val); select.tomselect.sync(); }" +
-                                            "select.dispatchEvent(new Event('change', { bubbles: true }));" +
-                                            "select.dispatchEvent(new Event('input', { bubbles: true }));", 
-                                            selectElement, valueToSelect);
-                                        
-                                        targetSelectionIndex++;
-                                    }
-                                }
-                            }
                         }
                     } catch (Exception e) {
                         // ignore issues with a specific select element and move to the next
                     }
                 }
             }
+            
+            distributeTargets();
             
             List<WebElement> attackBtns = driver.findElements(By.xpath("//input[contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //*[contains(@class, 'btn-danger') and contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')]"));
             for (WebElement btn : attackBtns) {
@@ -507,6 +502,8 @@ public class BattlePage extends BasePage {
                 }
             }
             
+            distributeTargets();
+            
             // Click Attack button
             List<WebElement> attackBtns = driver.findElements(By.xpath("//input[contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')] | //*[contains(@class, 'btn-danger') and contains(translate(@value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'attack')]"));
             for (WebElement btn : attackBtns) {
@@ -710,27 +707,41 @@ public class BattlePage extends BasePage {
             }
             
             if (!pickButtons.isEmpty()) {
-                WebElement lowestBtn = pickButtons.get(0);
-                int minLevel = Integer.MAX_VALUE;
+                class PokemonChoice {
+                    WebElement btn;
+                    int level;
+                    PokemonChoice(WebElement btn, int level) {
+                        this.btn = btn;
+                        this.level = level;
+                    }
+                }
                 
+                java.util.List<PokemonChoice> choices = new java.util.ArrayList<>();
                 for (WebElement btn : pickButtons) {
+                    int level = 999;
                     try {
                         WebElement row = btn.findElement(By.xpath("./ancestor::tr | ./ancestor::div[contains(@class, 'pokemon') or contains(@class, 'team-member')]"));
                         String rowText = row.getText();
-                        int level = 999;
                         java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:Level|Lvl)\\s*[:]?\\s*(\\d+)", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(rowText);
                         if (m.find()) {
                             level = Integer.parseInt(m.group(1));
                         }
-                        if (level < minLevel) {
-                            minLevel = level;
-                            lowestBtn = btn;
-                        }
                     } catch (Exception e) {}
+                    choices.add(new PokemonChoice(btn, level));
                 }
                 
-                new org.openqa.selenium.interactions.Actions(driver).moveToElement(lowestBtn).click().perform();
-                System.out.println("Automatically clicked 'Select Monster' button for lowest level (" + minLevel + ")");
+                choices.sort((a, b) -> Integer.compare(b.level, a.level)); // Descending (Highest first)
+                
+                PokemonChoice selectedChoice;
+                if (isFirstMonsterPick) {
+                    selectedChoice = choices.get(0); // Highest
+                    isFirstMonsterPick = false; // Next pick will be lowest
+                } else {
+                    selectedChoice = choices.get(choices.size() - 1); // Lowest
+                }
+                
+                new org.openqa.selenium.interactions.Actions(driver).moveToElement(selectedChoice.btn).click().perform();
+                System.out.println("Automatically clicked 'Select Monster' button for level (" + selectedChoice.level + ")");
                 try { Thread.sleep(1500); } catch(Exception e) {}
                 return true;
             }

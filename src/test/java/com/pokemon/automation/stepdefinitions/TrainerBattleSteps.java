@@ -105,6 +105,7 @@ public class TrainerBattleSteps {
             if (clicked) {
                 System.out.println("Checking for bot verification after clicking trainer battle...");
                 mapPage.handleBotCheckIfPresent();
+                battlePage.resetBattleState();
                 
                 int loopCount = 0;
                 int failedActionCount = 0;
@@ -220,6 +221,7 @@ public class TrainerBattleSteps {
                 if (clicked) {
             System.out.println("Checking for bot verification after clicking trainer battle...");
                     mapPage.handleBotCheckIfPresent();
+                    battlePage.resetBattleState();
                     
                     String enemyPoke = battlePage.getEnemyName();
                     System.out.println("Now battling enemy Pokemon: " + enemyPoke);
