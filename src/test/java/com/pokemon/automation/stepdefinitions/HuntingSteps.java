@@ -277,9 +277,15 @@ public class HuntingSteps {
                         }
                         
                         if (shouldCapture) {
-                            int targetHp = isLegendary ? 20 : 9;
-                            if (enemyHp < targetHp && enemyHp > 0) {
-                                if (pokeballAttemptCount < 1) {
+                            if (isLegendary && !isCaptured && masterballAttemptCount < 1) {
+                                System.out.println("Throwing Masterball immediately for uncaught legendary!");
+                                battlePage.useMasterball();
+                                masterballAttemptCount++;
+                                actionTaken = true;
+                            } else {
+                                int targetHp = isLegendary ? 20 : 9;
+                                if (enemyHp < targetHp && enemyHp > 0) {
+                                    if (pokeballAttemptCount < 1) {
                                     battlePage.usePokeball();
                                     pokeballAttemptCount++;
                                     actionTaken = true;
@@ -327,6 +333,7 @@ public class HuntingSteps {
                                         lastActionWasAttack = true;
                                     }
                                 }
+                            }
                             }
                         } else {
                             if (battlePage.selectHighestPowerAttack()) {
