@@ -12,6 +12,88 @@ import java.util.regex.Pattern;
 
 public class PokemonCenterPage extends BasePage {
 
+    private static final String[] LEGENDARIES = {
+        "aaron", "acophyte", "alpha appletun", "alpha arceus", "alpha caterpie",
+        "alpha charizard", "alpha cosmog", "alpha darkrai", "alpha deoxys", "alpha dialga",
+        "alpha espeon (black cat)", "alpha giratina (origin form)", "alpha ho-oh", "alpha hoopa (unbound)", "alpha kyurem (white)",
+        "alpha lugia", "alpha mega rayquaza", "alpha mew", "alpha mewtwo", "alpha palkia",
+        "alpha typhlosion", "alpha victini", "alpha weedle", "arceus", "armored zygarde (10%)",
+        "armored zygarde (complete)", "articuno", "articuno (divine)", "astral deoxys", "azelf",
+        "babereap", "baby lugia", "baphomet", "blacephalon", "bloodmoon ursaluna",
+        "bobbuffet", "bushil", "buzzwole", "calyrex", "calyrex (ice rider)",
+        "calyrex (shadow rider)", "carnivine", "cascoon", "catquaza", "celebi",
+        "celesteela", "cherrim (sunshine)", "chi-yu", "chien-pao", "cobalion",
+        "cosmog", "cresselia", "crystal blacephalon", "crystal charizard", "crystal chikorita",
+        "crystal cyndaquil", "crystal lapras", "crystal litwick", "crystal mudkip", "crystal onix",
+        "crystal stakataka", "crystal torchic", "crystal totodile", "crystal treecko", "cyber absol",
+        "cyber darkrema", "cyber falinks", "cyber goomy", "cyber kabuto", "dark zekrom",
+        "darkrai", "darkrai (divine)", "darkrema", "dawn wings necrozma", "deoxys",
+        "deoxys (attack form)", "deoxys (defense form)", "deoxys (speed form)", "dialga", "dialga (origin)",
+        "diancie", "ditto (winter)", "dolphini", "drampa", "dratini (electric elemental)",
+        "dratini (fire elemental)", "dratini (ice elemental)", "dratini (winter)", "durant", "dusk mane necrozma",
+        "elite training champion", "emberoll", "emosys", "enamorus", "enamorus (therian)",
+        "enlune", "entei", "entei (amped)", "eternatus", "event (aeg bday)",
+        "event (aeg&#039;s bday)", "event (jazzy bday)", "event (osiris bday)", "event (tyrael bday)", "evil celebi",
+        "ewok teddiursa", "falinks", "fezandipiti", "florion", "flutter mane",
+        "fossil totodile", "fossil tyrunt", "galarian articuno", "galarian moltres", "galarian zapdos",
+        "genesect", "ghost", "gigantamax alcremie", "gigantamax appletun", "gigantamax blastoise",
+        "gigantamax butterfree", "gigantamax centiskorch", "gigantamax charizard", "gigantamax charizard (winter)", "gigantamax cinderace",
+        "gigantamax coalossal", "gigantamax copperajah", "gigantamax corviknight", "gigantamax drednaw", "gigantamax duraludon",
+        "gigantamax eevee", "gigantamax flapple", "gigantamax garbodor", "gigantamax gengar", "gigantamax grimmsnarl",
+        "gigantamax hatterene", "gigantamax inteleon", "gigantamax kingler", "gigantamax lapras", "gigantamax lapras (pirate)",
+        "gigantamax machamp", "gigantamax melmetal", "gigantamax meowth", "gigantamax orbeetle", "gigantamax pikachu",
+        "gigantamax rillaboom", "gigantamax sandaconda", "gigantamax snorlax", "gigantamax snorlax (winter)", "gigantamax toxtricity",
+        "gigantamax urshifu (rapid-strike style)", "gigantamax urshifu (single-strike style)", "gigantamax venusaur", "gigantamax venusaur (winter)", "giratina",
+        "giratina (origin form)", "glastrier", "golden scizor", "gouging fire", "groudon",
+        "guzzlord", "halloween blastoise", "halloween bulbasaur", "halloween squirtle", "happy celebi",
+        "hatchling ho-oh", "hatmo", "heatmor", "heatran", "hinozerel",
+        "ho-oh", "hoopa", "iron boulder", "iron crown", "iron jugulis",
+        "iron leaves", "iron thorns", "iron valiant", "jirachi", "kartana",
+        "keldeo", "keldeo (resolute)", "koraidon", "koraidon (valentine)", "kubfu",
+        "kyogre", "kyurem", "kyurem (black)", "kyurem (white)", "landorus",
+        "landorus (therian)", "latias", "latios", "lugia", "lumirema",
+        "lunala (full moon)", "lunwere", "magearna", "magquaza", "majora marshadow",
+        "manamo", "manaphy", "marshadow", "marshadow (zenith)", "mecha-tyranitar",
+        "mega crystal mewtwo x", "mega crystal mewtwo y", "meloetta", "meloetta (pirouette)", "meltan",
+        "mesprit", "mew", "mew (armored)", "mewtwo", "mewtwo (armored)",
+        "miraidon", "miraidon (valentine)", "missingno", "moltres", "moltres (divine)",
+        "munkidori", "necrozma", "neo armored mewtwo", "nihilego", "ninstar",
+        "ogerpon", "okidogi", "onyx tyrunt", "palkia", "palkia (origin)",
+        "panthulhu", "pecharunt", "pheromosa", "phione", "pichu (spiky-eared)",
+        "piplup (ninja)", "poipole", "pokeexpress (conductor)", "pokeexpress (cozy)", "pokeexpress (gift)",
+        "pokeexpress (wish)", "poltahaus", "primal dialga", "primal palkia", "psyduck (ninja)",
+        "raging bolt", "raikou", "raikou (amped)", "rainbow armored zygarde (10%)", "rainbow growlithe",
+        "rainbow ho-oh", "rainbow mewtwo (armored)", "rainbow neo armored mewtwo", "rainbow vulpix", "rainbow zorua",
+        "rayquaza", "rayquaza (zenith)", "regice", "regidrago", "regieleki",
+        "regigigas", "regirock", "registeel", "reshiram", "roaring moon",
+        "rotom", "royal giratina", "royal kabuto", "royal magikarp", "royal manaphy",
+        "royal nidoran female", "royal nidoran male", "royal shinx", "sandy shocks", "seviper",
+        "shaymin", "shaymin (sky form)", "skalmo", "skuli", "snorlax (winter)",
+        "solgaleo (radiant sun)", "spectrier", "stakataka", "stripereor", "suicune",
+        "suicune (amped)", "summer charmander", "summer pachirisu", "tapu bulu", "tapu fini",
+        "tapu koko", "tapu lele", "terapagos", "terrakion", "thu-fi-zer",
+        "thundurus", "thundurus (therian)", "timewarped kyurem", "tinderloin", "ting-lu",
+        "tornadus", "tornadus (therian)", "turtonator", "type: null", "tyrogue (ninja)",
+        "uxie", "venustoise", "victini", "virizion", "virus cosmog",
+        "virus groudon", "virus kyogre", "virus rayquaza", "volcanion", "vouramp",
+        "walking wake", "willoel", "wishiwashi (school)", "wo-chien", "xerneas",
+        "xurkitree", "yveltal", "zacian (crowned sword)", "zacian (hero)", "zamazenta (crowned shield)",
+        "zamazenta (hero)", "zandshrew", "zangoose", "zangoose (ninja)", "zapdos",
+        "zapdos (divine)", "zarude", "zekrom", "zemeefin", "zenchen",
+        "zeraora", "zorua (stormtrooper)", "zygarde (complete)", "zygarde 10%", "zygarde 50%"
+    };
+
+    private boolean isLegendaryOrSpecial(String name) {
+        if (name == null || name.trim().isEmpty()) return false;
+        String lowerText = name.toLowerCase();
+        for (String leg : LEGENDARIES) {
+            if (java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(leg) + "\\b").matcher(lowerText).find()) {
+                return true;
+            }
+        }
+        return java.util.regex.Pattern.compile("\\b(shiny|metallic|mystic|dark|shadow)\\b").matcher(lowerText).find();
+    }
+
     public PokemonCenterPage(WebDriver driver) {
         super(driver);
     }
@@ -228,8 +310,9 @@ public class PokemonCenterPage extends BasePage {
         }
 
         // Check if any team member is >= maxLevelThreshold
-        System.out.println("Checking team for Pokemon >= Level " + maxLevelThreshold + "...");
+        System.out.println("Checking team for Pokemon >= Level " + maxLevelThreshold + " or non-Legendary/Special...");
         int highLevelIndex = -1;
+        boolean isSwappingBecauseNormal = false;
         try {
             List<WebElement> teamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
             if (teamTables.isEmpty()) {
@@ -248,9 +331,21 @@ public class PokemonCenterPage extends BasePage {
                 }
                 if (i >= currentTeamTables.size()) continue;
 
-                String lvlStr = currentTeamTables.get(i).getText().replaceAll("[^0-9]", "");
-                if (!lvlStr.isEmpty() && Integer.parseInt(lvlStr) >= maxLevelThreshold) {
+                WebElement supElement = currentTeamTables.get(i);
+                String lvlStr = supElement.getText().replaceAll("[^0-9]", "");
+                int level = !lvlStr.isEmpty() ? Integer.parseInt(lvlStr) : -1;
+                
+                WebElement tdElement = supElement.findElement(By.xpath("./.."));
+                String fullName = tdElement.getText();
+                boolean isLegOrSpec = isLegendaryOrSpecial(fullName);
+                
+                if (level >= maxLevelThreshold) {
                     highLevelIndex = i + 1; // 1-indexed for ddParty
+                    isSwappingBecauseNormal = false;
+                    break;
+                } else if (!isLegOrSpec) {
+                    highLevelIndex = i + 1;
+                    isSwappingBecauseNormal = true;
                     break;
                 }
             }
@@ -259,80 +354,13 @@ public class PokemonCenterPage extends BasePage {
         }
 
         if (highLevelIndex != -1) {
-            System.out.println("Found Pokemon >= Level " + maxLevelThreshold + " in slot " + highLevelIndex + "!");
+            if (isSwappingBecauseNormal) {
+                System.out.println("Found normal Pokemon in slot " + highLevelIndex + ". Will try to swap for Legendary/Special.");
+            } else {
+                System.out.println("Found Pokemon >= Level " + maxLevelThreshold + " in slot " + highLevelIndex + "!");
+            }
             String replacementMonValue = null;
             try {
-                String[] legendaries = {
-                    "aaron", "acophyte", "alpha appletun", "alpha arceus", "alpha caterpie",
-                    "alpha charizard", "alpha cosmog", "alpha darkrai", "alpha deoxys", "alpha dialga",
-                    "alpha espeon (black cat)", "alpha giratina (origin form)", "alpha ho-oh", "alpha hoopa (unbound)", "alpha kyurem (white)",
-                    "alpha lugia", "alpha mega rayquaza", "alpha mew", "alpha mewtwo", "alpha palkia",
-                    "alpha typhlosion", "alpha victini", "alpha weedle", "arceus", "armored zygarde (10%)",
-                    "armored zygarde (complete)", "articuno", "articuno (divine)", "astral deoxys", "azelf",
-                    "babereap", "baby lugia", "baphomet", "blacephalon", "bloodmoon ursaluna",
-                    "bobbuffet", "bushil", "buzzwole", "calyrex", "calyrex (ice rider)",
-                    "calyrex (shadow rider)", "carnivine", "cascoon", "catquaza", "celebi",
-                    "celesteela", "cherrim (sunshine)", "chi-yu", "chien-pao", "cobalion",
-                    "cosmog", "cresselia", "crystal blacephalon", "crystal charizard", "crystal chikorita",
-                    "crystal cyndaquil", "crystal lapras", "crystal litwick", "crystal mudkip", "crystal onix",
-                    "crystal stakataka", "crystal torchic", "crystal totodile", "crystal treecko", "cyber absol",
-                    "cyber darkrema", "cyber falinks", "cyber goomy", "cyber kabuto", "dark zekrom",
-                    "darkrai", "darkrai (divine)", "darkrema", "dawn wings necrozma", "deoxys",
-                    "deoxys (attack form)", "deoxys (defense form)", "deoxys (speed form)", "dialga", "dialga (origin)",
-                    "diancie", "ditto (winter)", "dolphini", "drampa", "dratini (electric elemental)",
-                    "dratini (fire elemental)", "dratini (ice elemental)", "dratini (winter)", "durant", "dusk mane necrozma",
-                    "elite training champion", "emberoll", "emosys", "enamorus", "enamorus (therian)",
-                    "enlune", "entei", "entei (amped)", "eternatus", "event (aeg bday)",
-                    "event (aeg&#039;s bday)", "event (jazzy bday)", "event (osiris bday)", "event (tyrael bday)", "evil celebi",
-                    "ewok teddiursa", "falinks", "fezandipiti", "florion", "flutter mane",
-                    "fossil totodile", "fossil tyrunt", "galarian articuno", "galarian moltres", "galarian zapdos",
-                    "genesect", "ghost", "gigantamax alcremie", "gigantamax appletun", "gigantamax blastoise",
-                    "gigantamax butterfree", "gigantamax centiskorch", "gigantamax charizard", "gigantamax charizard (winter)", "gigantamax cinderace",
-                    "gigantamax coalossal", "gigantamax copperajah", "gigantamax corviknight", "gigantamax drednaw", "gigantamax duraludon",
-                    "gigantamax eevee", "gigantamax flapple", "gigantamax garbodor", "gigantamax gengar", "gigantamax grimmsnarl",
-                    "gigantamax hatterene", "gigantamax inteleon", "gigantamax kingler", "gigantamax lapras", "gigantamax lapras (pirate)",
-                    "gigantamax machamp", "gigantamax melmetal", "gigantamax meowth", "gigantamax orbeetle", "gigantamax pikachu",
-                    "gigantamax rillaboom", "gigantamax sandaconda", "gigantamax snorlax", "gigantamax snorlax (winter)", "gigantamax toxtricity",
-                    "gigantamax urshifu (rapid-strike style)", "gigantamax urshifu (single-strike style)", "gigantamax venusaur", "gigantamax venusaur (winter)", "giratina",
-                    "giratina (origin form)", "glastrier", "golden scizor", "gouging fire", "groudon",
-                    "guzzlord", "halloween blastoise", "halloween bulbasaur", "halloween squirtle", "happy celebi",
-                    "hatchling ho-oh", "hatmo", "heatmor", "heatran", "hinozerel",
-                    "ho-oh", "hoopa", "iron boulder", "iron crown", "iron jugulis",
-                    "iron leaves", "iron thorns", "iron valiant", "jirachi", "kartana",
-                    "keldeo", "keldeo (resolute)", "koraidon", "koraidon (valentine)", "kubfu",
-                    "kyogre", "kyurem", "kyurem (black)", "kyurem (white)", "landorus",
-                    "landorus (therian)", "latias", "latios", "lugia", "lumirema",
-                    "lunala (full moon)", "lunwere", "magearna", "magquaza", "majora marshadow",
-                    "manamo", "manaphy", "marshadow", "marshadow (zenith)", "mecha-tyranitar",
-                    "mega crystal mewtwo x", "mega crystal mewtwo y", "meloetta", "meloetta (pirouette)", "meltan",
-                    "mesprit", "mew", "mew (armored)", "mewtwo", "mewtwo (armored)",
-                    "miraidon", "miraidon (valentine)", "missingno", "moltres", "moltres (divine)",
-                    "munkidori", "necrozma", "neo armored mewtwo", "nihilego", "ninstar",
-                    "ogerpon", "okidogi", "onyx tyrunt", "palkia", "palkia (origin)",
-                    "panthulhu", "pecharunt", "pheromosa", "phione", "pichu (spiky-eared)",
-                    "piplup (ninja)", "poipole", "pokeexpress (conductor)", "pokeexpress (cozy)", "pokeexpress (gift)",
-                    "pokeexpress (wish)", "poltahaus", "primal dialga", "primal palkia", "psyduck (ninja)",
-                    "raging bolt", "raikou", "raikou (amped)", "rainbow armored zygarde (10%)", "rainbow growlithe",
-                    "rainbow ho-oh", "rainbow mewtwo (armored)", "rainbow neo armored mewtwo", "rainbow vulpix", "rainbow zorua",
-                    "rayquaza", "rayquaza (zenith)", "regice", "regidrago", "regieleki",
-                    "regigigas", "regirock", "registeel", "reshiram", "roaring moon",
-                    "rotom", "royal giratina", "royal kabuto", "royal magikarp", "royal manaphy",
-                    "royal nidoran female", "royal nidoran male", "royal shinx", "sandy shocks", "seviper",
-                    "shaymin", "shaymin (sky form)", "skalmo", "skuli", "snorlax (winter)",
-                    "solgaleo (radiant sun)", "spectrier", "stakataka", "stripereor", "suicune",
-                    "suicune (amped)", "summer charmander", "summer pachirisu", "tapu bulu", "tapu fini",
-                    "tapu koko", "tapu lele", "terapagos", "terrakion", "thu-fi-zer",
-                    "thundurus", "thundurus (therian)", "timewarped kyurem", "tinderloin", "ting-lu",
-                    "tornadus", "tornadus (therian)", "turtonator", "type: null", "tyrogue (ninja)",
-                    "uxie", "venustoise", "victini", "virizion", "virus cosmog",
-                    "virus groudon", "virus kyogre", "virus rayquaza", "volcanion", "vouramp",
-                    "walking wake", "willoel", "wishiwashi (school)", "wo-chien", "xerneas",
-                    "xurkitree", "yveltal", "zacian (crowned sword)", "zacian (hero)", "zamazenta (crowned shield)",
-                    "zamazenta (hero)", "zandshrew", "zangoose", "zangoose (ninja)", "zapdos",
-                    "zapdos (divine)", "zarude", "zekrom", "zemeefin", "zenchen",
-                    "zeraora", "zorua (stormtrooper)", "zygarde (complete)", "zygarde 10%", "zygarde 50%"
-                };
-
                 String highestLevelMonValue = null;
                 int maxLevelFound = -1;
 
@@ -354,18 +382,7 @@ public class PokemonCenterPage extends BasePage {
                             highestLevelMonValue = value;
                         }
                         
-                        String lowerText = text.toLowerCase();
-                        boolean isLegendary = false;
-                        for (String leg : legendaries) {
-                            if (java.util.regex.Pattern.compile("\\b" + leg + "\\b").matcher(lowerText).find()) {
-                                isLegendary = true;
-                                break;
-                            }
-                        }
-                        
-                        boolean isSpecial = java.util.regex.Pattern.compile("\\b(shiny|metallic|mystic|dark|shadow)\\b").matcher(lowerText).find();
-                        
-                        if (isLegendary || isSpecial) {
+                        if (isLegendaryOrSpecial(text)) {
                             replacementMonValue = value;
                             break; // found one!
                         }
@@ -373,9 +390,13 @@ public class PokemonCenterPage extends BasePage {
                 }
                 
                 if (replacementMonValue == null) {
-                    replacementMonValue = highestLevelMonValue;
-                    if (replacementMonValue != null) {
-                        System.out.println("No Legendary/Special Pokemon < Level 90 found. Falling back to highest level available (< 90): Level " + maxLevelFound);
+                    if (isSwappingBecauseNormal) {
+                        System.out.println("No Legendary/Special Pokemon < Level 90 found in PC. Keeping current normal Pokemon to avoid infinite loop.");
+                    } else {
+                        replacementMonValue = highestLevelMonValue;
+                        if (replacementMonValue != null) {
+                            System.out.println("No Legendary/Special Pokemon < Level 90 found. Falling back to highest level available (< 90): Level " + maxLevelFound);
+                        }
                     }
                 }
             } catch (Exception e) {

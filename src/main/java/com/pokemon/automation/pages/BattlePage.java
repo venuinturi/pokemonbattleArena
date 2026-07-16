@@ -689,7 +689,7 @@ public class BattlePage extends BasePage {
         return levels.toString();
     }
 
-    public boolean handleSelectMonsterScreen() {
+    public boolean handleSelectMonsterScreen(int battleType) {
         try {
             java.util.List<WebElement> pickButtons = new java.util.ArrayList<>();
             List<WebElement> buttons = driver.findElements(org.openqa.selenium.By.xpath("//input[@type='submit' or @type='button'] | //button | //a[contains(@class, 'button')]"));
@@ -733,11 +733,17 @@ public class BattlePage extends BasePage {
                 choices.sort((a, b) -> Integer.compare(b.level, a.level)); // Descending (Highest first)
                 
                 PokemonChoice selectedChoice;
-                if (isFirstMonsterPick) {
-                    selectedChoice = choices.get(0); // Highest
-                    isFirstMonsterPick = false; // Next pick will be lowest
+                if (battleType == 1) {
+                    // 1v1 battle: always pick lowest
+                    selectedChoice = choices.get(choices.size() - 1);
                 } else {
-                    selectedChoice = choices.get(choices.size() - 1); // Lowest
+                    // 2v2 or 3v3 battle: Highest, Lowest, 2nd Lowest
+                    if (isFirstMonsterPick) {
+                        selectedChoice = choices.get(0); // Highest
+                        isFirstMonsterPick = false; // Next pick will be lowest
+                    } else {
+                        selectedChoice = choices.get(choices.size() - 1); // Lowest
+                    }
                 }
                 
                 new org.openqa.selenium.interactions.Actions(driver).moveToElement(selectedChoice.btn).click().perform();

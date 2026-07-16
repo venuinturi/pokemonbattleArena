@@ -198,7 +198,7 @@ public class HuntingSteps {
                     
                     // Check if we need to select a monster first before entering the actual battle menu
                     battlePage.resetBattleState();
-                    battlePage.handleSelectMonsterScreen();
+                    battlePage.handleSelectMonsterScreen(1);
 
                     int enemyLevel = battlePage.getEnemyLevel();
                     String enemyName = battlePage.getEnemyName();
@@ -239,7 +239,7 @@ public class HuntingSteps {
                         boolean actionTaken = false;
                         
                         // Handle case where our pokemon faints mid-battle
-                        if (battlePage.handleSelectMonsterScreen()) {
+                        if (battlePage.handleSelectMonsterScreen(1)) {
                             actionTaken = true;
                             faintedPokemonCount++;
                         }

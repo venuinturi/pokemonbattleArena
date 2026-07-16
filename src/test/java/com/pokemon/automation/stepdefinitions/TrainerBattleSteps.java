@@ -116,7 +116,7 @@ public class TrainerBattleSteps {
                     loopCount++;
                     boolean actionTaken = false;
                     
-                    if (battlePage.handleSelectMonsterScreen()) {
+                    if (battlePage.handleSelectMonsterScreen(battleType)) {
                         actionTaken = true;
                     }
                     
@@ -235,7 +235,7 @@ public class TrainerBattleSteps {
                         loopCount++;
                         boolean actionTaken = false;
                         
-                        if (battlePage.handleSelectMonsterScreen()) {
+                        if (battlePage.handleSelectMonsterScreen(battleType)) {
                             actionTaken = true;
                         }
                         
