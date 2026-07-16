@@ -647,6 +647,21 @@ public class BattlePage extends BasePage {
         }
     }
 
+    public int getWonPokeMoney() {
+        try {
+            String bodyText = driver.findElement(org.openqa.selenium.By.tagName("body")).getText();
+            // Expected format: "You have won the match and received $1,500!" or similar.
+            java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\$([0-9,]+)").matcher(bodyText);
+            if (m.find()) {
+                String moneyStr = m.group(1).replace(",", "");
+                return Integer.parseInt(moneyStr);
+            }
+        } catch (Exception e) {
+            System.out.println("Could not parse won PokeMoney: " + e.getMessage());
+        }
+        return 0;
+    }
+
     public boolean isContinuePresent() {
         try {
             String xpath = "//input[@value='Continue'] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'continue')] | //a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'return')] | //*[contains(@class, 'continue-button')]";

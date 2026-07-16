@@ -95,9 +95,9 @@ public class TrainerBattleSteps {
                 continue; // Navigates to list and applies new category
             }
             
-            boolean clicked = trainerPage.battleSpecificTrainer(trainerIndex, battleType);
+            String currentTrainerName = trainerPage.battleSpecificTrainer(trainerIndex, battleType);
             
-            if (clicked) {
+            if (currentTrainerName != null) {
                 System.out.println("Checking for bot verification after clicking trainer battle...");
                 mapPage.handleBotCheckIfPresent();
                 battlePage.resetBattleState();
@@ -116,6 +116,10 @@ public class TrainerBattleSteps {
                     }
                     
                     if (battlePage.isContinuePresent()) {
+                        int wonMoney = battlePage.getWonPokeMoney();
+                        if (wonMoney > 0) {
+                            com.pokemon.automation.utils.TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                        }
                         battlePage.clickContinueIfPresent();
                         System.out.println("Trainer Battle ended! Clicked Continue.");
                         break;
@@ -154,6 +158,15 @@ public class TrainerBattleSteps {
                     }
                     
                     try { Thread.sleep(2500); } catch (Exception e) {}
+                }
+                
+                // Extra check if loop ended right on battle completion
+                if (battlePage.isContinuePresent()) {
+                    int wonMoney = battlePage.getWonPokeMoney();
+                    if (wonMoney > 0) {
+                        com.pokemon.automation.utils.TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                    }
+                    battlePage.clickContinueIfPresent();
                 }
                 // Wait briefly before next battle (user requested 5 seconds timeout)
                 try { Thread.sleep(5000); } catch (InterruptedException e) {}
@@ -211,10 +224,10 @@ public class TrainerBattleSteps {
                     break; // Move to next category
                 }
                 
-                boolean clicked = trainerPage.battleSpecificTrainer(trainerIndex, battleType);
+                String currentTrainerName = trainerPage.battleSpecificTrainer(trainerIndex, battleType);
                 
-                if (clicked) {
-            System.out.println("Checking for bot verification after clicking trainer battle...");
+                if (currentTrainerName != null) {
+                    System.out.println("Checking for bot verification after clicking trainer battle...");
                     mapPage.handleBotCheckIfPresent();
                     battlePage.resetBattleState();
                     
@@ -235,6 +248,10 @@ public class TrainerBattleSteps {
                         }
                         
                         if (battlePage.isBattleComplete()) {
+                            int wonMoney = battlePage.getWonPokeMoney();
+                            if (wonMoney > 0) {
+                                com.pokemon.automation.utils.TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                            }
                             battlePage.clickContinueIfPresent();
                             System.out.println("Trainer Battle ended! Clicked Continue.");
                             break;
@@ -243,6 +260,10 @@ public class TrainerBattleSteps {
                         int currentEnemyHp = battlePage.getEnemyHp();
                         if (currentEnemyHp == 0) {
                             if (battlePage.isBattleComplete()) {
+                                int wonMoney = battlePage.getWonPokeMoney();
+                                if (wonMoney > 0) {
+                                    com.pokemon.automation.utils.TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                                }
                                 battlePage.clickContinueIfPresent();
                             }
                             break;
@@ -276,6 +297,16 @@ public class TrainerBattleSteps {
                         
                         try { Thread.sleep(2500); } catch (Exception e) {}
                     }
+                    
+                    // Final check just in case it ended exactly at the end of the loop
+                    if (battlePage.isBattleComplete()) {
+                        int wonMoney = battlePage.getWonPokeMoney();
+                        if (wonMoney > 0) {
+                            com.pokemon.automation.utils.TrainerStatsManager.saveReward(currentTrainerName, wonMoney);
+                        }
+                        battlePage.clickContinueIfPresent();
+                    }
+                    
                     battleType++;
                     if (battleType > 3) {
                         battleType = 1;

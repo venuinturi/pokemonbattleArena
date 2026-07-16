@@ -136,7 +136,7 @@ public class TrainerListPage extends BasePage {
         }
     }
 
-    public boolean battleSpecificTrainer(int trainerIndex, int battleType) {
+    public String battleSpecificTrainer(int trainerIndex, int battleType) {
         try {
             List<WebElement> rows = driver.findElements(By.xpath("//tr[.//button[contains(@onclick, 'BT=1')]]"));
             if (trainerIndex < rows.size()) {
@@ -151,13 +151,54 @@ public class TrainerListPage extends BasePage {
                     ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", btns.get(0));
                     System.out.println("Clicked " + battleType + "v" + battleType + " button against " + trainerName);
                     try { Thread.sleep(2000); } catch (Exception e) {}
-                    return true;
+                    return trainerName;
                 } else {
                     System.out.println(trainerName + " does not have a " + battleType + "v" + battleType + " option.");
                 }
             }
         } catch (Exception e) {
             System.out.println("Error while finding trainer battle link: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public java.util.List<String> getAllTrainersOnPage() {
+        java.util.List<String> trainers = new java.util.ArrayList<>();
+        try {
+            List<WebElement> rows = driver.findElements(By.xpath("//tr[.//button[contains(@onclick, 'BT=1')]]"));
+            for (WebElement row : rows) {
+                try {
+                    String name = row.findElement(By.xpath(".//td[1]")).getText().trim();
+                    if (!name.isEmpty()) {
+                        trainers.add(name);
+                    }
+                } catch (Exception e) {}
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading trainers: " + e.getMessage());
+        }
+        return trainers;
+    }
+
+    public boolean battleSpecificTrainerByName(String trainerName, int battleType) {
+        try {
+            List<WebElement> rows = driver.findElements(By.xpath("//tr[.//button[contains(@onclick, 'BT=1')]]"));
+            for (WebElement row : rows) {
+                try {
+                    String name = row.findElement(By.xpath(".//td[1]")).getText().trim();
+                    if (name.equalsIgnoreCase(trainerName)) {
+                        List<WebElement> btns = row.findElements(By.xpath(".//button[contains(@onclick, 'BT=" + battleType + "')]"));
+                        if (!btns.isEmpty()) {
+                            ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", btns.get(0));
+                            System.out.println("Clicked " + battleType + "v" + battleType + " button against " + trainerName);
+                            try { Thread.sleep(2000); } catch (Exception e) {}
+                            return true;
+                        }
+                    }
+                } catch(Exception e) {}
+            }
+        } catch (Exception e) {
+            System.out.println("Error while finding trainer battle link by name: " + e.getMessage());
         }
         return false;
     }

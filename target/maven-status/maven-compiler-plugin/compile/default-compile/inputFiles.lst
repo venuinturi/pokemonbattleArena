@@ -16,3 +16,4 @@
 /Users/venugopal/pokemon-battle-automation/src/main/java/com/pokemon/automation/pages/PokemonStoragePage.java
 /Users/venugopal/pokemon-battle-automation/src/main/java/com/pokemon/automation/pages/TrainerListPage.java
 /Users/venugopal/pokemon-battle-automation/src/main/java/com/pokemon/automation/stepdefinitions/MapExplorationSteps.java
+/Users/venugopal/pokemon-battle-automation/src/main/java/com/pokemon/automation/utils/TrainerStatsManager.java

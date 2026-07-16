@@ -14,6 +14,7 @@ com/pokemon/automation/config/ConfigReader.class
 com/pokemon/automation/DumpUnlockedMaps.class
 com/pokemon/automation/pages/BattlePage$1PokemonChoice.class
 com/pokemon/automation/mapping/MapGraph.class
+com/pokemon/automation/utils/TrainerStatsManager.class
 com/pokemon/automation/DumpMapHTML.class
 com/pokemon/automation/pages/MapNavigationPage.class
 com/pokemon/automation/pages/BattlePage.class
