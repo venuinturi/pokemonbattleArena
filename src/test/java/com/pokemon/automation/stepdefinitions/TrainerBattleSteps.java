@@ -67,7 +67,7 @@ public class TrainerBattleSteps {
 
             System.out.println("Healing team and checking for Level 90+ Pokemon...");
             centerPage.healTeam();
-            boolean swapped = centerPage.swapHighLevelForLegendaryOrSpecial(90);
+            boolean swapped = centerPage.swapHighLevelForLegendaryOrSpecial(90, 5);
             
             if (swapped) {
                 com.pokemon.automation.pages.MyTeamsPage teamsPage = new com.pokemon.automation.pages.MyTeamsPage(driver);
@@ -205,7 +205,7 @@ public class TrainerBattleSteps {
             while (true) {
                 System.out.println("Healing team and checking for Level 100 Pokemon...");
                 centerPage.healTeam();
-                centerPage.swapHighLevelForLegendaryOrSpecial(100);
+                centerPage.swapHighLevelForLegendaryOrSpecial(100, 5);
                 
                 iNavigateToTheTrainersList();
                 mapPage.closeAdIfPresent();

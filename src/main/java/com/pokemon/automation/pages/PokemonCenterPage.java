@@ -303,7 +303,7 @@ public class PokemonCenterPage extends BasePage {
         }
     }
     
-    public boolean swapHighLevelForLegendaryOrSpecial(int maxLevelThreshold) {
+    public boolean swapHighLevelForLegendaryOrSpecial(int maxLevelThreshold, int slotsToCheck) {
         if (!driver.getCurrentUrl().contains("pokemoncenter.php")) {
             driver.get("https://pokemonbattlearena.net/members/pokemoncenter.php");
             try { Thread.sleep(1000); } catch (Exception e) {}
@@ -321,8 +321,8 @@ public class PokemonCenterPage extends BasePage {
             int numTeamMembers = teamTables.size();
             
             for (int i = 0; i < numTeamMembers; i++) {
-                // Skip slots 5 and 6 (which are index 4 and 5)
-                if (i >= 4) continue;
+                // Skip slots beyond slotsToCheck (i is 0-indexed)
+                if (i >= slotsToCheck) continue;
                 
                 // Re-fetch to avoid stale element reference
                 List<WebElement> currentTeamTables = driver.findElements(By.xpath("//table[contains(@class, 'table-striped')]//tr/td[contains(., 'lvl')]/sup | //table[contains(@class, 'table-striped')]//tr/td[contains(text(), 'lvl')]/sup"));
